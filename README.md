@@ -20,6 +20,8 @@ Premium storefront for dry fruits, healthy laddus, Indian spices, seeds, mixes, 
 - Automatic stock reduction when orders are placed
 - Automatic stock restore when orders are cancelled or refunded
 - Inventory movement logs and low-stock alerts
+- Payment simulation for paid, failed, refunded, pending, and COD states
+- Payment status controls in admin orders
 - Customer OTP login/signup drawer in the storefront
 - Custom products can include future photo URLs and are saved in backend storage
 
