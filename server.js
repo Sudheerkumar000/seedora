@@ -379,6 +379,33 @@ async function handleApi(req, res, url) {
     return;
   }
 
+  if (req.method === "PUT" && url.pathname.startsWith("/api/admin/orders/")) {
+    if (!requireAdmin(req, res)) return;
+    const parts = url.pathname.split("/");
+    const orderId = decodeURIComponent(parts[4] || "");
+    const body = await readBody(req);
+    const order = db.orders.find((entry) => entry.id === orderId);
+    if (!order) {
+      json(res, 404, { error: "Order not found" });
+      return;
+    }
+    const allowed = ["placed", "packed", "shipped", "delivered", "cancelled", "refunded"];
+    if (!allowed.includes(body.status)) {
+      json(res, 400, { error: "Invalid order status" });
+      return;
+    }
+    order.status = body.status;
+    order.updatedAt = new Date().toISOString();
+    notify(db, "sms", db.customers.find((customer) => customer.id === order.customerId)?.mobile || "", "order_status", {
+      orderId: order.id,
+      status: order.status,
+    });
+    audit(db, "order.status_updated", { orderId: order.id, status: order.status });
+    writeDb(db);
+    json(res, 200, { order });
+    return;
+  }
+
   json(res, 404, { error: "API route not found" });
 }
 
