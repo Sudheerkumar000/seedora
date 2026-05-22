@@ -657,7 +657,7 @@ const productArt = {
 async function loadBackendCatalog() {
   try {
     const response = await fetch("/api/products");
-    if (!response.ok) return;
+    if (!response.ok) throw new Error("Backend catalog unavailable");
     const catalog = await response.json();
     products = catalog.products;
     categories = ["All", ...catalog.categories.map((category) => category.name)];
