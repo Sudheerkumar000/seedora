@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-22T11:35:47.504Z"
+    "updatedAt": "2026-05-22T11:39:52.041Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -1111,5 +1111,6 @@
   "payments": [],
   "otpVerifications": [],
   "notifications": [],
-  "auditLogs": []
+  "auditLogs": [],
+  "inventoryMovements": []
 }
