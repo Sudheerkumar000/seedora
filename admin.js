@@ -18,6 +18,9 @@ const orderDetailTitle = document.querySelector("#orderDetailTitle");
 const orderDetailContent = document.querySelector("#orderDetailContent");
 const printInvoice = document.querySelector("#printInvoice");
 const closeOrderDetail = document.querySelector("#closeOrderDetail");
+const inventoryAlerts = document.querySelector("#inventoryAlerts");
+const inventoryMovements = document.querySelector("#inventoryMovements");
+const refreshInventory = document.querySelector("#refreshInventory");
 
 let productCache = [];
 let orderCache = [];
@@ -25,6 +28,7 @@ let customerCache = [];
 let addressCache = [];
 let paymentCache = [];
 let summaryCache = {};
+let inventoryCache = { lowStock: [], movements: [] };
 
 function currency(value) {
   return `Rs. ${Number(value || 0).toLocaleString("en-IN")}`;
@@ -83,6 +87,25 @@ async function loadSummary() {
     summaryCache = data;
   } catch {
     summaryCache = {};
+  }
+}
+
+async function loadInventory() {
+  if (!adminPin()) {
+    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>Enter admin PIN.</strong><span>Inventory is protected.</span></div>`;
+    inventoryMovements.innerHTML = "";
+    return;
+  }
+  try {
+    const response = await fetch("/api/admin/inventory", {
+      headers: { "x-admin-pin": adminPin() },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not load inventory");
+    inventoryCache = data;
+  } catch (error) {
+    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Check the admin PIN and backend server.</span></div>`;
+    inventoryMovements.innerHTML = "";
   }
 }
 
@@ -305,6 +328,44 @@ function renderCustomers() {
     .join("");
 }
 
+function renderInventory() {
+  if (!inventoryCache.lowStock?.length) {
+    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>No low-stock alerts.</strong><span>Products with stock 10 or below will appear here.</span></div>`;
+  } else {
+    inventoryAlerts.innerHTML = inventoryCache.lowStock
+      .map(
+        (item) => `
+        <article class="admin-product low-stock-item">
+          <div>
+            <strong>${item.name}</strong>
+            <span>${item.category} · only ${item.stock} left</span>
+          </div>
+          <button type="button" data-edit="${item.id}">Update stock</button>
+        </article>
+      `,
+      )
+      .join("");
+  }
+
+  if (!inventoryCache.movements?.length) {
+    inventoryMovements.innerHTML = `<div class="empty-results"><strong>No stock movement yet.</strong><span>Orders and stock edits will create movement logs.</span></div>`;
+    return;
+  }
+  inventoryMovements.innerHTML = inventoryCache.movements
+    .map(
+      (movement) => `
+      <article class="admin-product">
+        <div>
+          <strong>${movement.productName}</strong>
+          <span>${movement.type} · ${movement.quantity > 0 ? "+" : ""}${movement.quantity} · ${movement.before} to ${movement.after}</span>
+          <span>${movement.orderId ? `Order ${movement.orderId}` : movement.note} · ${new Date(movement.createdAt).toLocaleString("en-IN")}</span>
+        </div>
+      </article>
+    `,
+    )
+    .join("");
+}
+
 function fillForm(item) {
   Object.entries(item).forEach(([key, value]) => {
     if (form.elements[key]) {
@@ -369,16 +430,28 @@ list.addEventListener("click", async (event) => {
   }
 });
 
+inventoryAlerts.addEventListener("click", (event) => {
+  const edit = event.target.closest("[data-edit]");
+  if (!edit) return;
+  const item = productCache.find((product) => product.id === edit.dataset.edit);
+  if (item) {
+    fillForm(item);
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
 list.addEventListener("change", async (event) => {
   const input = event.target.closest("[data-stock]");
   if (!input) return;
   try {
     await updateProductStock(input.dataset.stock, input.value);
-    note.textContent = "Stock updated.";
-    await loadProducts();
-    await loadSummary();
-    render();
-    renderSummary();
+      note.textContent = "Stock updated.";
+      await loadProducts();
+      await loadSummary();
+      await loadInventory();
+      render();
+      renderSummary();
+      renderInventory();
   } catch (error) {
     note.textContent = error.message;
   }
@@ -392,8 +465,10 @@ orderList.addEventListener("change", async (event) => {
       note.textContent = "Order status updated.";
       await loadOrders();
       await loadSummary();
+      await loadInventory();
       renderOrders();
       renderSummary();
+      renderInventory();
     } catch (error) {
     note.textContent = error.message;
   }
@@ -430,9 +505,16 @@ exportCustomersCsv.addEventListener("click", () => downloadFromBackend("customer
 refreshOrders.addEventListener("click", async () => {
   await loadOrders();
   await loadSummary();
+  await loadInventory();
   renderOrders();
   renderCustomers();
   renderSummary();
+  renderInventory();
+});
+
+refreshInventory.addEventListener("click", async () => {
+  await loadInventory();
+  renderInventory();
 });
 
 closeOrderDetail.addEventListener("click", () => {
@@ -447,10 +529,12 @@ async function initAdmin() {
   await loadProducts();
   await loadOrders();
   await loadSummary();
+  await loadInventory();
   render();
   renderOrders();
   renderCustomers();
   renderSummary();
+  renderInventory();
 }
 
 initAdmin();
