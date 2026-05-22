@@ -605,9 +605,26 @@ const productArt = {
   "green-raisins": ["green-raisin", "green-raisin", "green-raisin", "green-raisin", "green-raisin", "green-raisin"],
   "premium-figs": ["fig", "fig-half", "fig", "fig-half", "fig"],
   "whole-cranberries": ["cranberry", "cranberry", "cranberry", "cranberry", "cranberry", "cranberry"],
+  "premium-makhana": ["makhana", "makhana", "makhana", "makhana", "makhana"],
+  "chilgoza-pine-nuts": ["pine-nut", "pine-nut", "pine-nut", "pine-nut", "pine-nut", "pine-nut"],
+  "dry-coconut-slices": ["coconut", "coconut", "coconut", "coconut"],
+  "mixed-dry-berries": ["cranberry", "berry-dark", "cranberry", "berry-dark", "green-raisin", "berry-dark"],
+  "dried-prunes": ["prune", "prune", "prune", "prune", "prune"],
+  hazelnuts: ["hazelnut", "hazelnut", "hazelnut", "hazelnut", "hazelnut"],
+  pecans: ["pecan", "pecan", "pecan", "pecan", "pecan"],
   "pumpkin-seeds": ["pumpkin", "pumpkin", "pumpkin", "pumpkin", "pumpkin", "pumpkin"],
   "chia-seeds": ["chia", "chia", "chia", "chia", "chia", "chia", "chia", "chia"],
   "flax-seeds": ["flax", "flax", "flax", "flax", "flax", "flax"],
+  "sunflower-seeds": ["sunflower", "sunflower", "sunflower", "sunflower", "sunflower", "sunflower"],
+  "sesame-seeds": ["sesame", "sesame", "sesame", "sesame", "sesame", "sesame", "sesame", "sesame"],
+  "watermelon-seeds": ["watermelon-seed", "watermelon-seed", "watermelon-seed", "watermelon-seed", "watermelon-seed"],
+  "sabja-basil-seeds": ["basil-seed", "basil-seed", "basil-seed", "basil-seed", "basil-seed", "basil-seed"],
+  "hemp-seeds": ["hemp-seed", "hemp-seed", "hemp-seed", "hemp-seed", "hemp-seed"],
+  "fenugreek-seeds": ["fenugreek-seed", "fenugreek-seed", "fenugreek-seed", "fenugreek-seed", "fenugreek-seed"],
+  "poppy-seeds": ["poppy-seed", "poppy-seed", "poppy-seed", "poppy-seed", "poppy-seed", "poppy-seed"],
+  "fennel-seeds": ["fennel-seed", "fennel-seed", "fennel-seed", "fennel-seed", "fennel-seed"],
+  "coriander-seeds": ["coriander-seed", "coriander-seed", "coriander-seed", "coriander-seed", "coriander-seed"],
+  "nigella-seeds": ["nigella-seed", "nigella-seed", "nigella-seed", "nigella-seed", "nigella-seed"],
   "trail-mix": ["almond", "cashew", "green-raisin", "cranberry", "pumpkin", "pista-open"],
   "date-bites": ["date-bite", "date-bite", "date-bite", "date-bite", "date-bite"],
   "panchmeva-mix": ["almond", "cashew", "green-raisin", "date", "coconut", "pista"],
@@ -644,6 +661,15 @@ async function loadBackendCatalog() {
     const catalog = await response.json();
     products = catalog.products;
     categories = ["All", ...catalog.categories.map((category) => category.name)];
+    return;
+  } catch {
+  }
+  try {
+    const response = await fetch("data/seed.json");
+    if (!response.ok) throw new Error("Seed catalog unavailable");
+    const catalog = await response.json();
+    products = catalog.products.filter((product) => product.active !== false);
+    categories = ["All", ...catalog.categories.filter((category) => category.active !== false).map((category) => category.name)];
   } catch {
     products = [...products, ...customProducts()];
   }
