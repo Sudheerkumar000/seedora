@@ -32,6 +32,7 @@ function readDb() {
 }
 
 function writeDb(db) {
+  ensureCollections(db);
   db.meta.updatedAt = new Date().toISOString();
   fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
 }
@@ -100,6 +101,19 @@ function audit(db, action, details = {}) {
   });
 }
 
+function ensureCollections(db) {
+  db.inventoryMovements ||= [];
+}
+
+function recordInventoryMovement(db, movement) {
+  ensureCollections(db);
+  db.inventoryMovements.push({
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+    ...movement,
+  });
+}
+
 function notify(db, channel, to, template, payload = {}) {
   db.notifications.push({
     id: crypto.randomUUID(),
@@ -144,6 +158,8 @@ function cleanProduct(input, existing = {}) {
   if (!Number.isFinite(price) || price <= 0) throw new Error("Valid price is required");
   if (!Number.isFinite(mrp) || mrp < price) throw new Error("MRP must be greater than or equal to price");
 
+  const previousStock = Number(existing.stock ?? 100);
+  const nextStock = Number(input.stock ?? previousStock);
   return {
     id: input.id || existing.id || `custom-${slug(name)}-${Date.now().toString().slice(-4)}`,
     name,
@@ -162,7 +178,8 @@ function cleanProduct(input, existing = {}) {
           .filter(Boolean),
     colors: Array.isArray(input.colors) ? input.colors : existing.colors || ["#f4e8d8", "#246b45", "#d69b33"],
     image: String(input.image || existing.image || "").trim(),
-    stock: Number(input.stock ?? existing.stock ?? 100),
+    stock: Number.isFinite(nextStock) ? nextStock : previousStock,
+    previousStock,
     active: input.active ?? existing.active ?? true,
     createdAt: existing.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -176,6 +193,7 @@ function calculateOrder(db, body) {
     const product = db.products.find((entry) => entry.id === item.productId && entry.active);
     if (!product) throw new Error(`Product not found: ${item.productId}`);
     const qty = Math.max(1, Number(item.qty || 1));
+    if (Number(product.stock || 0) < qty) throw new Error(`${product.name} has only ${product.stock || 0} in stock`);
     const price = Number(item.price || product.price);
     return {
       id: crypto.randomUUID(),
@@ -193,6 +211,48 @@ function calculateOrder(db, body) {
   const delivery = subtotal >= db.settings.freeDeliveryThreshold ? 0 : 49;
   const total = subtotal - couponDiscount + delivery;
   return { orderItems, subtotal, couponDiscount, delivery, total };
+}
+
+function deductInventoryForOrder(db, order) {
+  order.items.forEach((item) => {
+    const product = db.products.find((entry) => entry.id === item.productId);
+    if (!product) return;
+    const before = Number(product.stock || 0);
+    product.stock = Math.max(0, before - item.qty);
+    product.updatedAt = new Date().toISOString();
+    recordInventoryMovement(db, {
+      productId: product.id,
+      productName: product.name,
+      type: "order_reserved",
+      quantity: -item.qty,
+      before,
+      after: product.stock,
+      orderId: order.id,
+      note: "Stock reduced after order placement",
+    });
+  });
+}
+
+function restockInventoryForOrder(db, order) {
+  if (order.inventoryRestoredAt) return;
+  order.items.forEach((item) => {
+    const product = db.products.find((entry) => entry.id === item.productId);
+    if (!product) return;
+    const before = Number(product.stock || 0);
+    product.stock = before + item.qty;
+    product.updatedAt = new Date().toISOString();
+    recordInventoryMovement(db, {
+      productId: product.id,
+      productName: product.name,
+      type: "order_restocked",
+      quantity: item.qty,
+      before,
+      after: product.stock,
+      orderId: order.id,
+      note: "Stock restored after cancellation/refund",
+    });
+  });
+  order.inventoryRestoredAt = new Date().toISOString();
 }
 
 function csvEscape(value) {
@@ -272,8 +332,22 @@ async function handleApi(req, res, url) {
       return;
     }
     const body = await readBody(req);
-    db.products[index] = cleanProduct({ ...body, id }, db.products[index]);
+    const previous = db.products[index];
+    const next = cleanProduct({ ...body, id }, previous);
+    db.products[index] = next;
     upsertCategory(db, db.products[index].category);
+    if (Number(previous.stock || 0) !== Number(next.stock || 0)) {
+      recordInventoryMovement(db, {
+        productId: next.id,
+        productName: next.name,
+        type: "manual_adjustment",
+        quantity: Number(next.stock || 0) - Number(previous.stock || 0),
+        before: Number(previous.stock || 0),
+        after: Number(next.stock || 0),
+        orderId: "",
+        note: "Admin stock update",
+      });
+    }
     audit(db, "product.updated", { productId: id });
     writeDb(db);
     json(res, 200, { product: publicProduct(db.products[index]) });
@@ -386,6 +460,7 @@ async function handleApi(req, res, url) {
       updatedAt: new Date().toISOString(),
     };
     db.orders.push(order);
+    deductInventoryForOrder(db, order);
     db.payments.push({
       id: crypto.randomUUID(),
       orderId: order.id,
@@ -428,7 +503,21 @@ async function handleApi(req, res, url) {
       productCount: db.products.filter((product) => product.active).length,
       statusCounts,
       lowStock,
+      inventoryMovementCount: (db.inventoryMovements || []).length,
+      recentInventoryMovements: (db.inventoryMovements || []).slice(-8).reverse(),
       recentOrders: db.orders.slice(-5).reverse(),
+    });
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/admin/inventory") {
+    if (!requireAdmin(req, res)) return;
+    ensureCollections(db);
+    json(res, 200, {
+      lowStock: db.products
+        .filter((product) => product.active && Number(product.stock || 0) <= 10)
+        .map((product) => ({ id: product.id, name: product.name, category: product.category, stock: product.stock })),
+      movements: db.inventoryMovements.slice(-100).reverse(),
     });
     return;
   }
@@ -488,8 +577,12 @@ async function handleApi(req, res, url) {
       json(res, 400, { error: "Invalid order status" });
       return;
     }
+    const previousStatus = order.status;
     order.status = body.status;
     order.updatedAt = new Date().toISOString();
+    if (!["cancelled", "refunded"].includes(previousStatus) && ["cancelled", "refunded"].includes(order.status)) {
+      restockInventoryForOrder(db, order);
+    }
     notify(db, "sms", db.customers.find((customer) => customer.id === order.customerId)?.mobile || "", "order_status", {
       orderId: order.id,
       status: order.status,
