@@ -23,6 +23,12 @@
           <a href="#plans">Plans</a>
         </nav>
         <div class="header-actions">
+          <button class="icon-button" id="accountButton" type="button" aria-label="Login or view account">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 21a8 8 0 0 0-16 0" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
           <button class="icon-button" id="wishlistButton" type="button" aria-label="Show wishlist">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
@@ -238,6 +244,46 @@
         </svg>
       </button>
       <div id="productDetails"></div>
+    </aside>
+
+    <aside class="drawer" id="authDrawer" aria-label="Customer login" aria-hidden="true">
+      <button class="close-button" type="button" data-close-drawer aria-label="Close login">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="cart-head">
+        <p class="eyebrow">Seedora account</p>
+        <h2>Login with OTP</h2>
+      </div>
+      <form class="checkout" id="otpRequestForm">
+        <label>
+          Name
+          <input type="text" name="name" placeholder="Your name" />
+        </label>
+        <label>
+          Mobile
+          <input type="tel" name="mobile" placeholder="10-digit mobile" required />
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" placeholder="Optional email" />
+        </label>
+        <label class="consent-row">
+          <input type="checkbox" name="consent" required />
+          I agree to receive Seedora order updates and account messages.
+        </label>
+        <button class="primary-action" type="submit">Send OTP</button>
+      </form>
+      <form class="checkout" id="otpVerifyForm">
+        <label>
+          OTP
+          <input type="text" name="otp" placeholder="6-digit OTP" inputmode="numeric" required />
+        </label>
+        <button class="secondary-action" type="submit">Verify and login</button>
+      </form>
+      <div class="order-receipt" id="accountCard" hidden></div>
+      <p class="order-note" id="authNote" role="status"></p>
     </aside>
 
     <aside class="drawer cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
