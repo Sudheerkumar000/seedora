@@ -4,13 +4,7 @@ const note = document.querySelector("#adminNote");
 const resetForm = document.querySelector("#resetForm");
 const exportProducts = document.querySelector("#exportProducts");
 
-function products() {
-  return JSON.parse(localStorage.getItem("seedoraCustomProducts") || "[]");
-}
-
-function saveProducts(items) {
-  localStorage.setItem("seedoraCustomProducts", JSON.stringify(items));
-}
+let productCache = [];
 
 function slug(value) {
   return value
@@ -20,20 +14,61 @@ function slug(value) {
     .replace(/(^-|-$)/g, "");
 }
 
+function adminPin() {
+  return form.elements.adminPin.value.trim();
+}
+
+async function loadProducts() {
+  try {
+    const response = await fetch("/api/products");
+    const data = await response.json();
+    productCache = data.products;
+  } catch {
+    productCache = JSON.parse(localStorage.getItem("seedoraCustomProducts") || "[]");
+  }
+}
+
+async function saveProduct(item) {
+  const method = productCache.some((product) => product.id === item.id) ? "PUT" : "POST";
+  const url = method === "PUT" ? `/api/products/${encodeURIComponent(item.id)}` : "/api/products";
+  const response = await fetch(url, {
+    method,
+    headers: {
+      "content-type": "application/json",
+      "x-admin-pin": adminPin(),
+    },
+    body: JSON.stringify(item),
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: "Save failed" }));
+    throw new Error(error.error || "Save failed");
+  }
+}
+
+async function deleteProduct(id) {
+  const response = await fetch(`/api/products/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { "x-admin-pin": adminPin() },
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: "Delete failed" }));
+    throw new Error(error.error || "Delete failed");
+  }
+}
+
 function render() {
-  const items = products();
-  if (!items.length) {
-    list.innerHTML = `<div class="empty-results"><strong>No custom products yet.</strong><span>Add your first product using the form.</span></div>`;
+  if (!productCache.length) {
+    list.innerHTML = `<div class="empty-results"><strong>No products found.</strong><span>Add your first product using the form.</span></div>`;
     return;
   }
 
-  list.innerHTML = items
+  list.innerHTML = productCache
     .map(
       (item) => `
       <article class="admin-product">
         <div>
           <strong>${item.name}</strong>
-          <span>${item.category} · ${item.pack} · Rs. ${Number(item.price).toLocaleString("en-IN")}</span>
+          <span>${item.category} · ${item.pack} · Rs. ${Number(item.price).toLocaleString("en-IN")} · stock ${item.stock ?? 0}</span>
         </div>
         <div class="admin-product-actions">
           <button type="button" data-edit="${item.id}">Edit</button>
@@ -53,7 +88,7 @@ function fillForm(item) {
   });
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(form);
   const name = data.get("name").toString().trim();
@@ -68,6 +103,7 @@ form.addEventListener("submit", (event) => {
     description: data.get("description").toString().trim(),
     image: data.get("image").toString().trim(),
     rating: 4.5,
+    stock: 100,
     benefits: data
       .get("benefits")
       .toString()
@@ -76,36 +112,48 @@ form.addEventListener("submit", (event) => {
       .filter(Boolean),
     colors: ["#f4e8d8", "#246b45", "#d69b33"],
   };
-  const next = products().filter((product) => product.id !== item.id);
-  next.push(item);
-  saveProducts(next);
-  form.reset();
-  note.textContent = "Product saved. Open the shop to see it in Seedora.";
-  render();
+  try {
+    await saveProduct(item);
+    const pin = adminPin();
+    form.reset();
+    form.elements.adminPin.value = pin;
+    note.textContent = "Product saved to backend.";
+    await loadProducts();
+    render();
+  } catch (error) {
+    note.textContent = error.message;
+  }
 });
 
-list.addEventListener("click", (event) => {
+list.addEventListener("click", async (event) => {
   const edit = event.target.closest("[data-edit]");
   const remove = event.target.closest("[data-delete]");
   if (edit) {
-    const item = products().find((product) => product.id === edit.dataset.edit);
+    const item = productCache.find((product) => product.id === edit.dataset.edit);
     if (item) fillForm(item);
   }
   if (remove) {
-    saveProducts(products().filter((product) => product.id !== remove.dataset.delete));
-    note.textContent = "Product deleted.";
-    render();
+    try {
+      await deleteProduct(remove.dataset.delete);
+      note.textContent = "Product deleted from backend.";
+      await loadProducts();
+      render();
+    } catch (error) {
+      note.textContent = error.message;
+    }
   }
 });
 
 resetForm.addEventListener("click", () => {
+  const pin = adminPin();
   form.reset();
   form.elements.id.value = "";
+  form.elements.adminPin.value = pin;
   note.textContent = "";
 });
 
 exportProducts.addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(products(), null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(productCache, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -114,4 +162,9 @@ exportProducts.addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
-render();
+async function initAdmin() {
+  await loadProducts();
+  render();
+}
+
+initAdmin();
