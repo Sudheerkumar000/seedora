@@ -821,6 +821,114 @@ h1 {
   background: #9d6d43;
 }
 
+.makhana {
+  width: 58px;
+  height: 52px;
+  border-radius: 48% 52% 45% 55%;
+  background:
+    radial-gradient(circle at 34% 35%, rgba(255, 255, 255, 0.8) 0 8px, transparent 9px),
+    #e8d6a7;
+}
+
+.pine-nut,
+.sunflower,
+.watermelon-seed,
+.hemp-seed,
+.fenugreek-seed,
+.fennel-seed {
+  width: 42px;
+  height: 18px;
+  border-radius: 100% 14% 100% 14%;
+  background: var(--seed-color);
+}
+
+.pine-nut {
+  --seed-color: #c7a15a;
+}
+
+.sunflower {
+  --seed-color: #b9a05b;
+}
+
+.watermelon-seed {
+  --seed-color: #8fa574;
+}
+
+.hemp-seed {
+  --seed-color: #889a5d;
+}
+
+.fenugreek-seed {
+  --seed-color: #b78035;
+}
+
+.fennel-seed {
+  --seed-color: #9aac58;
+}
+
+.sesame,
+.basil-seed,
+.poppy-seed,
+.nigella-seed {
+  width: 24px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--seed-color);
+}
+
+.sesame {
+  --seed-color: #d8c68c;
+}
+
+.basil-seed,
+.nigella-seed {
+  --seed-color: #1e2623;
+}
+
+.poppy-seed {
+  --seed-color: #aaa193;
+}
+
+.berry-dark {
+  width: 42px;
+  height: 36px;
+  border-radius: 50% 50% 44% 56%;
+  background: #5a304d;
+}
+
+.prune {
+  width: 62px;
+  height: 42px;
+  border-radius: 999px;
+  background: #5a304d;
+}
+
+.hazelnut {
+  width: 54px;
+  height: 48px;
+  border-radius: 48% 52% 54% 46%;
+  background: #9d6738;
+}
+
+.pecan {
+  width: 70px;
+  height: 32px;
+  border-radius: 999px;
+  background: #8b4f32;
+}
+
+.pecan::after {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 3px;
+  height: 20px;
+  content: "";
+  border-radius: 999px;
+  background: rgba(76, 43, 32, 0.42);
+  transform: translateX(-50%);
+}
+
 .date-bite {
   width: 52px;
   height: 44px;
