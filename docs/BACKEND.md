@@ -20,6 +20,7 @@ The local backend supports:
 - Automatic restock on cancellation/refund
 - Inventory movement history and low-stock alerts
 - Packing invoice data for orders, addresses, and payments
+- Local payment simulation and payment-status management
 - Payment records
 - Notification queue
 - Audit logs
@@ -69,6 +70,17 @@ It stores:
 - `otpVerifications`
 - `notifications`
 - `auditLogs`
+- `inventoryMovements`
+
+## Admin API Highlights
+
+- `GET /api/admin/orders` returns orders with customers, addresses, and payments.
+- `PUT /api/admin/orders/:id` updates packing, shipping, delivery, cancellation, and refund status.
+- `PUT /api/admin/payments/:orderId` simulates payment status changes for local testing.
+- `GET /api/admin/inventory` returns low-stock alerts and stock movement history.
+- `GET /api/admin/export/products|orders|customers?pin=...` downloads CSV exports.
+
+Payment simulation supports `payment_pending`, `paid`, `failed`, `refunded`, and `cod_pending`. A paid status creates a local gateway-style payment ID. A refunded status marks the order as refunded and restores reserved stock one time.
 
 For production, move this to PostgreSQL.
 
