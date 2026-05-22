@@ -125,30 +125,6 @@ a {
   gap: 8px;
 }
 
-.header-trust {
-  display: grid;
-  min-width: 154px;
-  padding: 8px 12px;
-  border: 1px solid rgba(36, 107, 69, 0.14);
-  border-radius: 8px;
-  background: #f3faf4;
-  line-height: 1.05;
-}
-
-.header-trust span {
-  color: var(--leaf);
-  font-size: 0.72rem;
-  font-weight: 850;
-  text-transform: uppercase;
-}
-
-.header-trust a {
-  margin-top: 4px;
-  color: var(--ink);
-  font-size: 0.86rem;
-  font-weight: 900;
-}
-
 .icon-button,
 .close-button {
   position: relative;
@@ -2450,10 +2426,6 @@ h1 {
 
   .hero {
     min-height: 0;
-  }
-
-  .header-trust {
-    display: none;
   }
 
   .filters {
