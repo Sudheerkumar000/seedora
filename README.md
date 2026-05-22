@@ -12,6 +12,8 @@ Premium storefront for dry fruits, healthy laddus, Indian spices, seeds, mixes, 
 - Checkout with all-India delivery, UPI, cards/net banking, wallets, and cash on delivery
 - Backend APIs for products, OTP login, orders, payments, notification queue, and audit logs
 - Owner product manager at `admin.html`
+- Admin order dashboard with order status updates
+- Customer OTP login/signup drawer in the storefront
 - Custom products can include future photo URLs and are saved in backend storage
 
 ## Business Details
