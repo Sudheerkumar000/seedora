@@ -16,6 +16,7 @@ Premium storefront for dry fruits, healthy laddus, Indian spices, seeds, mixes, 
 - Admin dashboard summary for revenue, orders, customers, and products
 - CSV exports for products, orders, and customers
 - Stock updates from the admin product list
+- Order detail view with customer address, payment info, item breakdown, and printable packing invoice
 - Customer OTP login/signup drawer in the storefront
 - Custom products can include future photo URLs and are saved in backend storage
 
