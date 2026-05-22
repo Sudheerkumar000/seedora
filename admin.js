@@ -3,12 +3,25 @@ const list = document.querySelector("#adminProductList");
 const note = document.querySelector("#adminNote");
 const resetForm = document.querySelector("#resetForm");
 const exportProducts = document.querySelector("#exportProducts");
+const exportProductsCsv = document.querySelector("#exportProductsCsv");
 const orderList = document.querySelector("#adminOrderList");
 const refreshOrders = document.querySelector("#refreshOrders");
+const exportOrdersCsv = document.querySelector("#exportOrdersCsv");
+const customerList = document.querySelector("#adminCustomerList");
+const exportCustomersCsv = document.querySelector("#exportCustomersCsv");
+const summaryRevenue = document.querySelector("#summaryRevenue");
+const summaryOrders = document.querySelector("#summaryOrders");
+const summaryCustomers = document.querySelector("#summaryCustomers");
+const summaryProducts = document.querySelector("#summaryProducts");
 
 let productCache = [];
 let orderCache = [];
 let customerCache = [];
+let summaryCache = {};
+
+function currency(value) {
+  return `Rs. ${Number(value || 0).toLocaleString("en-IN")}`;
+}
 
 function slug(value) {
   return value
@@ -47,6 +60,20 @@ async function loadOrders() {
     customerCache = data.customers;
   } catch (error) {
     orderList.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Check the admin PIN and backend server.</span></div>`;
+  }
+}
+
+async function loadSummary() {
+  if (!adminPin()) return;
+  try {
+    const response = await fetch("/api/admin/summary", {
+      headers: { "x-admin-pin": adminPin() },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not load summary");
+    summaryCache = data;
+  } catch {
+    summaryCache = {};
   }
 }
 
@@ -91,6 +118,20 @@ async function updateOrderStatus(id, status) {
   if (!response.ok) throw new Error(data.error || "Could not update order");
 }
 
+async function updateProductStock(id, stock) {
+  const product = productCache.find((item) => item.id === id);
+  if (!product) return;
+  await saveProduct({ ...product, stock: Number(stock) });
+}
+
+function downloadFromBackend(type) {
+  if (!adminPin()) {
+    note.textContent = "Enter admin PIN before export.";
+    return;
+  }
+  window.location.href = `/api/admin/export/${type}?pin=${encodeURIComponent(adminPin())}`;
+}
+
 function render() {
   if (!productCache.length) {
     list.innerHTML = `<div class="empty-results"><strong>No products found.</strong><span>Add your first product using the form.</span></div>`;
@@ -102,17 +143,25 @@ function render() {
       (item) => `
       <article class="admin-product">
         <div>
-          <strong>${item.name}</strong>
-          <span>${item.category} · ${item.pack} · Rs. ${Number(item.price).toLocaleString("en-IN")} · stock ${item.stock ?? 0}</span>
-        </div>
-        <div class="admin-product-actions">
-          <button type="button" data-edit="${item.id}">Edit</button>
-          <button type="button" data-delete="${item.id}">Delete</button>
-        </div>
+            <strong>${item.name}</strong>
+            <span>${item.category} · ${item.pack} · Rs. ${Number(item.price).toLocaleString("en-IN")} · stock ${item.stock ?? 0}</span>
+          </div>
+          <div class="admin-product-actions">
+            <label class="stock-edit">Stock <input type="number" min="0" value="${item.stock ?? 0}" data-stock="${item.id}" /></label>
+            <button type="button" data-edit="${item.id}">Edit</button>
+            <button type="button" data-delete="${item.id}">Delete</button>
+          </div>
       </article>
     `,
     )
     .join("");
+}
+
+function renderSummary() {
+  summaryRevenue.textContent = currency(summaryCache.totalRevenue);
+  summaryOrders.textContent = Number(summaryCache.orderCount || 0).toLocaleString("en-IN");
+  summaryCustomers.textContent = Number(summaryCache.customerCount || 0).toLocaleString("en-IN");
+  summaryProducts.textContent = Number(summaryCache.productCount || productCache.length).toLocaleString("en-IN");
 }
 
 function renderOrders() {
@@ -142,6 +191,28 @@ function renderOrders() {
         </article>
       `;
     })
+    .join("");
+}
+
+function renderCustomers() {
+  if (!customerCache.length) {
+    customerList.innerHTML = `<div class="empty-results"><strong>No customers yet.</strong><span>OTP logins and checkout customers will appear here.</span></div>`;
+    return;
+  }
+  customerList.innerHTML = customerCache
+    .slice()
+    .reverse()
+    .map(
+      (customer) => `
+      <article class="admin-product">
+        <div>
+          <strong>${customer.name || "Seedora customer"}</strong>
+          <span>${customer.mobile || ""} · ${customer.email || "No email"}</span>
+          <span>Joined ${new Date(customer.createdAt).toLocaleDateString("en-IN")}</span>
+        </div>
+      </article>
+    `,
+    )
     .join("");
 }
 
@@ -209,15 +280,32 @@ list.addEventListener("click", async (event) => {
   }
 });
 
+list.addEventListener("change", async (event) => {
+  const input = event.target.closest("[data-stock]");
+  if (!input) return;
+  try {
+    await updateProductStock(input.dataset.stock, input.value);
+    note.textContent = "Stock updated.";
+    await loadProducts();
+    await loadSummary();
+    render();
+    renderSummary();
+  } catch (error) {
+    note.textContent = error.message;
+  }
+});
+
 orderList.addEventListener("change", async (event) => {
   const select = event.target.closest("[data-order-status]");
   if (!select) return;
   try {
     await updateOrderStatus(select.dataset.orderStatus, select.value);
-    note.textContent = "Order status updated.";
-    await loadOrders();
-    renderOrders();
-  } catch (error) {
+      note.textContent = "Order status updated.";
+      await loadOrders();
+      await loadSummary();
+      renderOrders();
+      renderSummary();
+    } catch (error) {
     note.textContent = error.message;
   }
 });
@@ -240,16 +328,26 @@ exportProducts.addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
+exportProductsCsv.addEventListener("click", () => downloadFromBackend("products"));
+exportOrdersCsv.addEventListener("click", () => downloadFromBackend("orders"));
+exportCustomersCsv.addEventListener("click", () => downloadFromBackend("customers"));
+
 refreshOrders.addEventListener("click", async () => {
   await loadOrders();
+  await loadSummary();
   renderOrders();
+  renderCustomers();
+  renderSummary();
 });
 
 async function initAdmin() {
   await loadProducts();
   await loadOrders();
+  await loadSummary();
   render();
   renderOrders();
+  renderCustomers();
+  renderSummary();
 }
 
 initAdmin();
