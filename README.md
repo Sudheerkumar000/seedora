@@ -5,7 +5,7 @@ Premium storefront for dry fruits, healthy laddus, Indian spices, seeds, mixes, 
 ## Current Features
 
 - Premium Seedora landing and catalog experience
-- 40 starter products across nuts, dried fruits, seeds, mixes, gifts, laddus, and spices
+- 57 starter products across nuts, dried fruits, seeds, mixes, gifts, laddus, and spices
 - Search, category filters, quick filters, budget filter, sorting, wishlist, and saved cart
 - Product detail drawer with pack-size pricing
 - Coupon support with `SEEDORA10`
