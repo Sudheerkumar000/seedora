@@ -150,6 +150,19 @@ async function updateOrderStatus(id, status) {
   if (!response.ok) throw new Error(data.error || "Could not update order");
 }
 
+async function updatePaymentStatus(id, status) {
+  const response = await fetch(`/api/admin/payments/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+      "x-admin-pin": adminPin(),
+    },
+    body: JSON.stringify({ status, provider: "manual-simulation" }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Could not update payment");
+}
+
 async function updateProductStock(id, stock) {
   const product = productCache.find((item) => item.id === id);
   if (!product) return;
@@ -211,10 +224,16 @@ function renderOrders() {
           <div>
             <strong>${order.id} · ${order.status}</strong>
             <span>${customer.name || "Customer"} · ${customer.mobile || ""} · Rs. ${Number(order.total).toLocaleString("en-IN")}</span>
+            <span>Payment: ${order.paymentMethod} · ${order.paymentStatus}</span>
             <span>${order.items.map((item) => `${item.name} x${item.qty}`).join(", ")}</span>
           </div>
           <div class="admin-product-actions">
             <button type="button" data-order-detail="${order.id}">Details</button>
+            <select data-payment-status="${order.id}">
+              ${["payment_pending", "paid", "failed", "refunded", "cod_pending"]
+                .map((status) => `<option value="${status}" ${status === order.paymentStatus ? "selected" : ""}>${status}</option>`)
+                .join("")}
+            </select>
             <select data-order-status="${order.id}">
               ${["placed", "packed", "shipped", "delivered", "cancelled", "refunded"]
                 .map((status) => `<option value="${status}" ${status === order.status ? "selected" : ""}>${status}</option>`)
@@ -266,6 +285,7 @@ function renderOrderDetail(orderId) {
           <span>${order.paymentMethod}</span>
           <span>${order.paymentStatus}</span>
           <span>${payment.provider || "manual-or-gateway"}</span>
+          <span>${payment.gatewayPaymentId || "No gateway payment ID yet"}</span>
         </section>
       </div>
       <table class="invoice-table">
@@ -459,13 +479,20 @@ list.addEventListener("change", async (event) => {
 
 orderList.addEventListener("change", async (event) => {
   const select = event.target.closest("[data-order-status]");
-  if (!select) return;
+  const paymentSelect = event.target.closest("[data-payment-status]");
+  if (!select && !paymentSelect) return;
   try {
-    await updateOrderStatus(select.dataset.orderStatus, select.value);
+    if (select) {
+      await updateOrderStatus(select.dataset.orderStatus, select.value);
       note.textContent = "Order status updated.";
-      await loadOrders();
-      await loadSummary();
-      await loadInventory();
+    }
+    if (paymentSelect) {
+      await updatePaymentStatus(paymentSelect.dataset.paymentStatus, paymentSelect.value);
+      note.textContent = "Payment status updated.";
+    }
+    await loadOrders();
+    await loadSummary();
+    await loadInventory();
       renderOrders();
       renderSummary();
       renderInventory();
