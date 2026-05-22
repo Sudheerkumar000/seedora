@@ -567,8 +567,10 @@ const quickFilters = document.querySelector("#quickFilters");
 const emptyResults = document.querySelector("#emptyResults");
 const productDrawer = document.querySelector("#productDrawer");
 const cartDrawer = document.querySelector("#cartDrawer");
+const authDrawer = document.querySelector("#authDrawer");
 const overlay = document.querySelector("#overlay");
 const productDetails = document.querySelector("#productDetails");
+const accountButton = document.querySelector("#accountButton");
 const cartButton = document.querySelector("#cartButton");
 const cartCount = document.querySelector("#cartCount");
 const wishlistButton = document.querySelector("#wishlistButton");
@@ -585,6 +587,12 @@ const deliveryNote = document.querySelector("#deliveryNote");
 const checkoutForm = document.querySelector("#checkoutForm");
 const orderReceipt = document.querySelector("#orderReceipt");
 const orderNote = document.querySelector("#orderNote");
+const otpRequestForm = document.querySelector("#otpRequestForm");
+const otpVerifyForm = document.querySelector("#otpVerifyForm");
+const authNote = document.querySelector("#authNote");
+const accountCard = document.querySelector("#accountCard");
+let pendingOtpProfile = JSON.parse(localStorage.getItem("seedoraPendingOtpProfile") || "null");
+let customerSession = JSON.parse(localStorage.getItem("seedoraCustomerSession") || "null");
 
 const productArt = {
   "almond-california": ["almond", "almond", "almond", "almond", "almond", "almond"],
@@ -684,6 +692,32 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => {
     if (orderNote.textContent === message) orderNote.textContent = "";
   }, 2600);
+}
+
+function renderAccount() {
+  if (!customerSession?.customer) {
+    accountCard.hidden = true;
+    accountButton.title = "Login to Seedora";
+    return;
+  }
+  const customer = customerSession.customer;
+  accountButton.title = `Logged in as ${customer.name || customer.mobile}`;
+  accountCard.hidden = false;
+  accountCard.innerHTML = `
+    <strong>${customer.name || "Seedora customer"}</strong>
+    <span>${customer.mobile}</span>
+    ${customer.email ? `<span>${customer.email}</span>` : ""}
+    <button class="reset-button" type="button" id="logoutButton">Logout</button>
+  `;
+  fillCheckoutProfile();
+}
+
+function fillCheckoutProfile() {
+  if (!customerSession?.customer) return;
+  const customer = customerSession.customer;
+  if (checkoutForm.elements.name && !checkoutForm.elements.name.value) checkoutForm.elements.name.value = customer.name || "";
+  if (checkoutForm.elements.mobile && !checkoutForm.elements.mobile.value) checkoutForm.elements.mobile.value = customer.mobile || "";
+  if (checkoutForm.elements.email && !checkoutForm.elements.email.value) checkoutForm.elements.email.value = customer.email || "";
 }
 
 function setVisualStyle(element, product) {
@@ -834,8 +868,10 @@ function openDrawer(drawer) {
 function closeDrawers() {
   productDrawer.classList.remove("open");
   cartDrawer.classList.remove("open");
+  authDrawer.classList.remove("open");
   productDrawer.setAttribute("aria-hidden", "true");
   cartDrawer.setAttribute("aria-hidden", "true");
+  authDrawer.setAttribute("aria-hidden", "true");
   overlay.hidden = true;
 }
 
@@ -1106,6 +1142,10 @@ document.addEventListener("click", (event) => {
 });
 
 cartButton.addEventListener("click", () => openDrawer(cartDrawer));
+accountButton.addEventListener("click", () => {
+  renderAccount();
+  openDrawer(authDrawer);
+});
 wishlistButton.addEventListener("click", () => {
   activeQuickFilter = "wishlist";
   selectedCategory = "All";
@@ -1149,6 +1189,76 @@ applyCoupon.addEventListener("click", () => {
     showToast(`Try ${businessSettings.couponCode} for 10% off.`);
   }
   renderCart();
+});
+
+otpRequestForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const data = new FormData(otpRequestForm);
+  const mobile = data.get("mobile").toString().trim();
+  if (!/^\d{10}$/.test(mobile)) {
+    authNote.textContent = "Please enter a valid 10-digit mobile number.";
+    return;
+  }
+  pendingOtpProfile = {
+    name: data.get("name").toString().trim(),
+    mobile,
+    email: data.get("email").toString().trim(),
+    consent: data.get("consent") === "on",
+  };
+  localStorage.setItem("seedoraPendingOtpProfile", JSON.stringify(pendingOtpProfile));
+  try {
+    const response = await fetch("/api/auth/request-otp", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(pendingOtpProfile),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Could not send OTP");
+    authNote.textContent = result.devOtp
+      ? `OTP sent. Development OTP: ${result.devOtp}`
+      : "OTP sent to your mobile.";
+  } catch (error) {
+    authNote.textContent = error.message;
+  }
+});
+
+otpVerifyForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!pendingOtpProfile) {
+    authNote.textContent = "Please request OTP first.";
+    return;
+  }
+  const data = new FormData(otpVerifyForm);
+  try {
+    const response = await fetch("/api/auth/verify-otp", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        ...pendingOtpProfile,
+        otp: data.get("otp").toString().trim(),
+      }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "OTP verification failed");
+    customerSession = result;
+    pendingOtpProfile = null;
+    localStorage.setItem("seedoraCustomerSession", JSON.stringify(customerSession));
+    localStorage.removeItem("seedoraPendingOtpProfile");
+    authNote.textContent = "Logged in successfully.";
+    otpRequestForm.reset();
+    otpVerifyForm.reset();
+    renderAccount();
+  } catch (error) {
+    authNote.textContent = error.message;
+  }
+});
+
+accountCard.addEventListener("click", (event) => {
+  if (!event.target.closest("#logoutButton")) return;
+  customerSession = null;
+  localStorage.removeItem("seedoraCustomerSession");
+  authNote.textContent = "Logged out.";
+  renderAccount();
 });
 
 checkoutForm.addEventListener("submit", async (event) => {
@@ -1223,6 +1333,7 @@ checkoutForm.addEventListener("submit", async (event) => {
 
 async function initSeedora() {
   await loadBackendCatalog();
+  renderAccount();
   renderCategories();
   renderProducts();
   renderCart();
