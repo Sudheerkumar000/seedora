@@ -16,6 +16,7 @@ The local backend supports:
 - Admin dashboard summary
 - CSV exports for products, orders, and customers
 - Stock update workflow
+- Packing invoice data for orders, addresses, and payments
 - Payment records
 - Notification queue
 - Audit logs
