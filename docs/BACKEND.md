@@ -16,6 +16,9 @@ The local backend supports:
 - Admin dashboard summary
 - CSV exports for products, orders, and customers
 - Stock update workflow
+- Automatic stock reduction on order creation
+- Automatic restock on cancellation/refund
+- Inventory movement history and low-stock alerts
 - Packing invoice data for orders, addresses, and payments
 - Payment records
 - Notification queue
