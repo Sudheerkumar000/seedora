@@ -2164,6 +2164,17 @@ h1 {
   border-radius: 8px;
 }
 
+.inventory-history-head {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.low-stock-item {
+  border-color: rgba(180, 72, 83, 0.28);
+  background: #fff8f6;
+}
+
 .order-detail-panel {
   margin-top: 22px;
 }
