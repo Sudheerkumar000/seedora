@@ -1071,6 +1071,16 @@ categoryList.addEventListener("click", (event) => {
   renderProducts();
 });
 
+document.querySelectorAll("[data-nav-category]").forEach((link) => {
+  link.addEventListener("click", () => {
+    selectedCategory = link.dataset.navCategory;
+    activeQuickFilter = "all";
+    searchInput.value = "";
+    renderCategories();
+    renderProducts();
+  });
+});
+
 productGrid.addEventListener("click", (event) => {
   const addButton = event.target.closest("[data-add]");
   const viewButton = event.target.closest("[data-view]");
