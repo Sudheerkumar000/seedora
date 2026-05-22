@@ -255,6 +255,26 @@ function restockInventoryForOrder(db, order) {
   order.inventoryRestoredAt = new Date().toISOString();
 }
 
+function updatePaymentForOrder(db, order, status, provider = "manual-or-gateway") {
+  const payment = db.payments.find((entry) => entry.orderId === order.id);
+  if (!payment) throw new Error("Payment record not found");
+  const allowed = ["payment_pending", "paid", "failed", "refunded", "cod_pending"];
+  if (!allowed.includes(status)) throw new Error("Invalid payment status");
+  payment.status = status;
+  payment.provider = provider || payment.provider;
+  payment.gatewayOrderId ||= `seedora_order_${order.id}`;
+  payment.gatewayPaymentId =
+    status === "paid" ? payment.gatewayPaymentId || `seedora_pay_${Date.now().toString().slice(-8)}` : payment.gatewayPaymentId || "";
+  payment.updatedAt = new Date().toISOString();
+  order.paymentStatus = status;
+  order.updatedAt = new Date().toISOString();
+  if (status === "refunded") {
+    order.status = "refunded";
+    restockInventoryForOrder(db, order);
+  }
+  return payment;
+}
+
 function csvEscape(value) {
   const text = String(value ?? "");
   return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
@@ -278,6 +298,7 @@ function orderRows(db) {
       total: order.total,
       payment_method: order.paymentMethod,
       payment_status: order.paymentStatus,
+      gateway_payment_id: db.payments.find((payment) => payment.orderId === order.id)?.gatewayPaymentId || "",
       items: order.items.map((item) => `${item.name} x${item.qty}`).join("; "),
       created_at: order.createdAt,
     };
@@ -590,6 +611,26 @@ async function handleApi(req, res, url) {
     audit(db, "order.status_updated", { orderId: order.id, status: order.status });
     writeDb(db);
     json(res, 200, { order });
+    return;
+  }
+
+  if (req.method === "PUT" && url.pathname.startsWith("/api/admin/payments/")) {
+    if (!requireAdmin(req, res)) return;
+    const orderId = decodeURIComponent(url.pathname.split("/").pop());
+    const body = await readBody(req);
+    const order = db.orders.find((entry) => entry.id === orderId);
+    if (!order) {
+      json(res, 404, { error: "Order not found" });
+      return;
+    }
+    const payment = updatePaymentForOrder(db, order, body.status, body.provider || "manual-simulation");
+    notify(db, "sms", db.customers.find((customer) => customer.id === order.customerId)?.mobile || "", "payment_status", {
+      orderId: order.id,
+      paymentStatus: order.paymentStatus,
+    });
+    audit(db, "payment.status_updated", { orderId: order.id, paymentStatus: order.paymentStatus });
+    writeDb(db);
+    json(res, 200, { order, payment });
     return;
   }
 
