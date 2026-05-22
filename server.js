@@ -113,7 +113,8 @@ function notify(db, channel, to, template, payload = {}) {
 }
 
 function requireAdmin(req, res) {
-  if (req.headers["x-admin-pin"] !== adminPin) {
+  const requestUrl = new URL(req.url, `http://${req.headers.host}`);
+  if (req.headers["x-admin-pin"] !== adminPin && requestUrl.searchParams.get("pin") !== adminPin) {
     json(res, 401, { error: "Admin PIN required" });
     return false;
   }
@@ -192,6 +193,35 @@ function calculateOrder(db, body) {
   const delivery = subtotal >= db.settings.freeDeliveryThreshold ? 0 : 49;
   const total = subtotal - couponDiscount + delivery;
   return { orderItems, subtotal, couponDiscount, delivery, total };
+}
+
+function csvEscape(value) {
+  const text = String(value ?? "");
+  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function toCsv(rows) {
+  if (!rows.length) return "";
+  const headers = Object.keys(rows[0]);
+  return [headers.join(","), ...rows.map((row) => headers.map((header) => csvEscape(row[header])).join(","))].join("\n");
+}
+
+function orderRows(db) {
+  return db.orders.map((order) => {
+    const customer = db.customers.find((entry) => entry.id === order.customerId) || {};
+    return {
+      order_id: order.id,
+      status: order.status,
+      customer_name: customer.name || "",
+      mobile: customer.mobile || "",
+      email: customer.email || "",
+      total: order.total,
+      payment_method: order.paymentMethod,
+      payment_status: order.paymentStatus,
+      items: order.items.map((item) => `${item.name} x${item.qty}`).join("; "),
+      created_at: order.createdAt,
+    };
+  });
 }
 
 async function handleApi(req, res, url) {
@@ -376,6 +406,70 @@ async function handleApi(req, res, url) {
   if (req.method === "GET" && url.pathname === "/api/admin/orders") {
     if (!requireAdmin(req, res)) return;
     json(res, 200, { orders: db.orders, customers: db.customers, payments: db.payments });
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/admin/summary") {
+    if (!requireAdmin(req, res)) return;
+    const totalRevenue = db.orders
+      .filter((order) => !["cancelled", "refunded"].includes(order.status))
+      .reduce((sum, order) => sum + Number(order.total || 0), 0);
+    const statusCounts = db.orders.reduce((counts, order) => {
+      counts[order.status] = (counts[order.status] || 0) + 1;
+      return counts;
+    }, {});
+    const lowStock = db.products
+      .filter((product) => product.active && Number(product.stock || 0) <= 10)
+      .map((product) => ({ id: product.id, name: product.name, stock: product.stock }));
+    json(res, 200, {
+      totalRevenue,
+      orderCount: db.orders.length,
+      customerCount: db.customers.length,
+      productCount: db.products.filter((product) => product.active).length,
+      statusCounts,
+      lowStock,
+      recentOrders: db.orders.slice(-5).reverse(),
+    });
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname.startsWith("/api/admin/export/")) {
+    if (!requireAdmin(req, res)) return;
+    const type = url.pathname.split("/").pop();
+    const rows =
+      type === "orders"
+        ? orderRows(db)
+        : type === "customers"
+          ? db.customers.map((customer) => ({
+              id: customer.id,
+              name: customer.name,
+              mobile: customer.mobile,
+              email: customer.email,
+              consent: customer.consent,
+              created_at: customer.createdAt,
+            }))
+          : type === "products"
+            ? db.products
+                .filter((product) => product.active)
+                .map((product) => ({
+                  id: product.id,
+                  name: product.name,
+                  category: product.category,
+                  price: product.price,
+                  mrp: product.mrp,
+                  pack: product.pack,
+                  stock: product.stock,
+                }))
+            : null;
+    if (!rows) {
+      json(res, 404, { error: "Export not found" });
+      return;
+    }
+    res.writeHead(200, {
+      "content-type": "text/csv; charset=utf-8",
+      "content-disposition": `attachment; filename="seedora-${type}.csv"`,
+    });
+    res.end(toCsv(rows));
     return;
   }
 
