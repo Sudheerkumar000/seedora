@@ -1,0 +1,1115 @@
+{
+  "meta": {
+    "name": "Seedora",
+    "version": 1,
+    "createdAt": "2026-05-22T11:04:29.310Z",
+    "updatedAt": "2026-05-22T11:08:42.661Z"
+  },
+  "settings": {
+    "phone": "+91 9704597062",
+    "email": "hello@seedora.in",
+    "deliveryRegion": "All India",
+    "couponCode": "SEEDORA10",
+    "freeDeliveryThreshold": 999,
+    "paymentMethods": [
+      "UPI",
+      "Cards or net banking",
+      "Wallets",
+      "Cash on delivery"
+    ],
+    "defaultPaymentMethod": "UPI"
+  },
+  "categories": [
+    {
+      "id": "nuts",
+      "name": "Nuts",
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "dried-fruits",
+      "name": "Dried Fruits",
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "seeds",
+      "name": "Seeds",
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "mixes",
+      "name": "Mixes",
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "gifts",
+      "name": "Gifts",
+      "sortOrder": 5,
+      "active": true
+    },
+    {
+      "id": "laddus",
+      "name": "Laddus",
+      "sortOrder": 6,
+      "active": true
+    },
+    {
+      "id": "spices",
+      "name": "Spices",
+      "sortOrder": 7,
+      "active": true
+    }
+  ],
+  "products": [
+    {
+      "id": "almond-california",
+      "name": "California Almonds",
+      "category": "Nuts",
+      "tag": "Bestseller",
+      "description": "Crunchy whole almonds for breakfast bowls and daily snacking.",
+      "price": 349,
+      "mrp": 425,
+      "pack": "250 g",
+      "rating": 4.8,
+      "benefits": [
+        "Hand-sorted large kernels",
+        "Rich in plant protein",
+        "Resealable freshness pack"
+      ],
+      "colors": [
+        "#f7e5cb",
+        "#b87548",
+        "#79503a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "cashew-w320",
+      "name": "Whole Cashews W320",
+      "category": "Nuts",
+      "tag": "Premium",
+      "description": "Creamy cashews for sweets, curries, trail mixes, and gifting.",
+      "price": 429,
+      "mrp": 520,
+      "pack": "250 g",
+      "rating": 4.7,
+      "benefits": [
+        "Uniform W320 grade",
+        "Naturally buttery bite",
+        "Vacuum packed"
+      ],
+      "colors": [
+        "#f6eecf",
+        "#efd28f",
+        "#c5903c"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "pista-roasted",
+      "name": "Roasted Salted Pistachios",
+      "category": "Nuts",
+      "tag": "Roasted",
+      "description": "Lightly salted pistachios with a crisp roasted finish.",
+      "price": 399,
+      "mrp": 480,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Slow roasted",
+        "Balanced salt",
+        "Party snack ready"
+      ],
+      "colors": [
+        "#eef4d7",
+        "#95ad5c",
+        "#52683a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "walnut-kernels",
+      "name": "Extra Light Walnuts",
+      "category": "Nuts",
+      "tag": "Fresh crop",
+      "description": "Clean walnut kernels for desserts, salads, and daily nutrition.",
+      "price": 379,
+      "mrp": 460,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Extra light halves",
+        "Naturally omega-rich",
+        "No shell pieces"
+      ],
+      "colors": [
+        "#efe2d0",
+        "#9c6d44",
+        "#5f3f2d"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "macadamia-nuts",
+      "name": "Macadamia Nuts",
+      "category": "Nuts",
+      "tag": "Luxury",
+      "description": "Buttery macadamias for premium snacking, baking, and hampers.",
+      "price": 749,
+      "mrp": 890,
+      "pack": "200 g",
+      "rating": 4.7,
+      "benefits": [
+        "Creamy whole nuts",
+        "Small-batch packed",
+        "Premium gifting pick"
+      ],
+      "colors": [
+        "#f3ead1",
+        "#d2ad68",
+        "#8b6630"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "turkish-apricot",
+      "name": "Dried Turkish Apricots",
+      "category": "Dried Fruits",
+      "tag": "Soft bite",
+      "description": "Naturally sweet apricots with a bright fruit-forward taste.",
+      "price": 299,
+      "mrp": 360,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Soft and chewy",
+        "Great for lunch boxes",
+        "High fruit content"
+      ],
+      "colors": [
+        "#ffe3b2",
+        "#e19532",
+        "#a85722"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "kimia-dates",
+      "name": "Kimia Dates",
+      "category": "Dried Fruits",
+      "tag": "No added sugar",
+      "description": "Soft dates for natural sweetness, smoothies, and evening cravings.",
+      "price": 249,
+      "mrp": 310,
+      "pack": "500 g",
+      "rating": 4.8,
+      "benefits": [
+        "Soft premium dates",
+        "Naturally sweet",
+        "Family value pack"
+      ],
+      "colors": [
+        "#edd2bf",
+        "#6a3b32",
+        "#3a1f1b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "green-raisins",
+      "name": "Afghani Green Raisins",
+      "category": "Dried Fruits",
+      "tag": "Imported",
+      "description": "Long green raisins for sweets, pulao, cereal, and snacking.",
+      "price": 229,
+      "mrp": 275,
+      "pack": "250 g",
+      "rating": 4.4,
+      "benefits": [
+        "Long berry size",
+        "Naturally tangy-sweet",
+        "Cleaned and sorted"
+      ],
+      "colors": [
+        "#edf1c4",
+        "#a3aa4f",
+        "#686b2a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "premium-figs",
+      "name": "Premium Dried Figs",
+      "category": "Dried Fruits",
+      "tag": "Fiber rich",
+      "description": "Soft anjeer with tiny crunchy seeds and deep caramel notes.",
+      "price": 469,
+      "mrp": 560,
+      "pack": "250 g",
+      "rating": 4.6,
+      "benefits": [
+        "Moist, soft texture",
+        "Breakfast friendly",
+        "Premium grade selection"
+      ],
+      "colors": [
+        "#f0d4bc",
+        "#7b4661",
+        "#563142"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "whole-cranberries",
+      "name": "Whole Cranberries",
+      "category": "Dried Fruits",
+      "tag": "Tangy",
+      "description": "Sweet-tart cranberries for cereal bowls, baking, and trail mixes.",
+      "price": 229,
+      "mrp": 280,
+      "pack": "200 g",
+      "rating": 4.4,
+      "benefits": [
+        "Whole berry texture",
+        "Bright tangy flavor",
+        "Great for baking"
+      ],
+      "colors": [
+        "#f6d7dc",
+        "#b44853",
+        "#682f48"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "pumpkin-seeds",
+      "name": "Pumpkin Seeds",
+      "category": "Seeds",
+      "tag": "Protein",
+      "description": "Green pumpkin seeds for salads, smoothies, and baking.",
+      "price": 199,
+      "mrp": 259,
+      "pack": "200 g",
+      "rating": 4.7,
+      "benefits": [
+        "Raw premium seeds",
+        "Plant protein source",
+        "Easy reseal pouch"
+      ],
+      "colors": [
+        "#dff0dc",
+        "#5c8d50",
+        "#315a38"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "chia-seeds",
+      "name": "Black Chia Seeds",
+      "category": "Seeds",
+      "tag": "Breakfast",
+      "description": "Tiny nutrient-dense seeds for puddings, water, and smoothie bowls.",
+      "price": 159,
+      "mrp": 210,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Cleaned black seeds",
+        "Good for soaked recipes",
+        "Daily breakfast staple"
+      ],
+      "colors": [
+        "#d9e2df",
+        "#28302d",
+        "#606b66"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "flax-seeds",
+      "name": "Premium Flax Seeds",
+      "category": "Seeds",
+      "tag": "Omega",
+      "description": "Nutty flax seeds for rotis, smoothies, chutneys, and breakfast jars.",
+      "price": 89,
+      "mrp": 120,
+      "pack": "200 g",
+      "rating": 4.3,
+      "benefits": [
+        "Clean raw seeds",
+        "Everyday kitchen staple",
+        "Budget-friendly pack"
+      ],
+      "colors": [
+        "#eadac5",
+        "#9d6d43",
+        "#684324"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "trail-mix",
+      "name": "Berry Trail Mix",
+      "category": "Mixes",
+      "tag": "Snack cup",
+      "description": "Almonds, cashews, raisins, cranberries, and seeds in one mix.",
+      "price": 279,
+      "mrp": 340,
+      "pack": "200 g",
+      "rating": 4.8,
+      "benefits": [
+        "Sweet and nutty blend",
+        "Travel-friendly",
+        "No fried ingredients"
+      ],
+      "colors": [
+        "#f4dfdf",
+        "#b44853",
+        "#5b405c"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "date-bites",
+      "name": "Dark Choco Date Bites",
+      "category": "Mixes",
+      "tag": "Dessert",
+      "description": "No added sugar date bites with nuts and dark cocoa.",
+      "price": 345,
+      "mrp": 400,
+      "pack": "180 g",
+      "rating": 4.9,
+      "benefits": [
+        "Dessert-style snack",
+        "Made with dates",
+        "Individually portioned"
+      ],
+      "colors": [
+        "#e8d6cb",
+        "#4c2b28",
+        "#a96c4b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "panchmeva-mix",
+      "name": "Panchmeva Nut Mix",
+      "category": "Mixes",
+      "tag": "Traditional",
+      "description": "A festive mix of almonds, cashews, raisins, dates, and dried coconut.",
+      "price": 469,
+      "mrp": 549,
+      "pack": "405 g",
+      "rating": 4.6,
+      "benefits": [
+        "Five classic ingredients",
+        "Sweet and crunchy",
+        "Family sharing pack"
+      ],
+      "colors": [
+        "#f2e6d6",
+        "#c18443",
+        "#7c4b35"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "gift-box",
+      "name": "Seedora Signature Gift Box",
+      "category": "Gifts",
+      "tag": "Gift ready",
+      "description": "A premium assorted box with nuts, dates, figs, seeds, and trail mix.",
+      "price": 1199,
+      "mrp": 1499,
+      "pack": "1 box",
+      "rating": 4.9,
+      "benefits": [
+        "Elegant gifting sleeve",
+        "Six curated sections",
+        "Custom message card"
+      ],
+      "colors": [
+        "#e7f1e6",
+        "#246b45",
+        "#d69b33"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "wedding-hamper",
+      "name": "Celebration Hamper",
+      "category": "Gifts",
+      "tag": "Festive",
+      "description": "Large hamper with premium nuts, dried fruits, and date sweets.",
+      "price": 1899,
+      "mrp": 2299,
+      "pack": "1 hamper",
+      "rating": 4.8,
+      "benefits": [
+        "Premium festive box",
+        "Ideal for bulk gifting",
+        "Ribbon packed"
+      ],
+      "colors": [
+        "#f4e8d8",
+        "#b47a35",
+        "#7b2f43"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "classic-dry-fruit-laddu",
+      "name": "Classic Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Classic",
+      "description": "Traditional dry fruit laddus with nuts, dates, figs, coconut, ghee, and seeds.",
+      "price": 399,
+      "mrp": 475,
+      "pack": "250 g",
+      "rating": 4.7,
+      "benefits": [
+        "Made with mixed dry fruits",
+        "Festival and daily snack",
+        "Rich nutty texture"
+      ],
+      "colors": [
+        "#f2e2c9",
+        "#b87548",
+        "#6a3b32"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "anjeer-dry-fruit-laddu",
+      "name": "Anjeer Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Premium",
+      "description": "Fig-rich laddus with almonds, cashews, dates, pistachios, ghee, and cardamom.",
+      "price": 660,
+      "mrp": 745,
+      "pack": "250 g",
+      "rating": 4.8,
+      "benefits": [
+        "Loaded with figs",
+        "Premium festive sweet",
+        "Cardamom finish"
+      ],
+      "colors": [
+        "#f0d4bc",
+        "#7b4661",
+        "#d69b33"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "sugar-free-dry-fruit-laddu",
+      "name": "Sugar-Free Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "No sugar",
+      "description": "Naturally sweet laddus made with dates, figs, raisins, nuts, and seeds.",
+      "price": 799,
+      "mrp": 899,
+      "pack": "500 g",
+      "rating": 4.7,
+      "benefits": [
+        "No added sugar",
+        "Naturally sweetened",
+        "Energy-rich snack"
+      ],
+      "colors": [
+        "#e9f2e8",
+        "#246b45",
+        "#6a3b32"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "dates-dry-fruit-laddu",
+      "name": "Dates Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Khajur",
+      "description": "Soft khajur laddus with crunchy nuts for natural sweetness and energy.",
+      "price": 349,
+      "mrp": 425,
+      "pack": "250 g",
+      "rating": 4.8,
+      "benefits": [
+        "Date-based sweetness",
+        "Lunchbox friendly",
+        "No artificial colors"
+      ],
+      "colors": [
+        "#ead2bf",
+        "#6a3b32",
+        "#c18443"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "choco-dates-dry-fruit-laddu",
+      "name": "Choco Dates Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Choco",
+      "description": "Chocolatey date laddus with nuts, cocoa notes, and no refined-sweet feel.",
+      "price": 699,
+      "mrp": 800,
+      "pack": "360 g",
+      "rating": 4.8,
+      "benefits": [
+        "Chocolate-style taste",
+        "Made with dates and nuts",
+        "Good for sweet cravings"
+      ],
+      "colors": [
+        "#e8d6cb",
+        "#4c2b28",
+        "#a96c4b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "andhra-style-dry-fruit-laddu",
+      "name": "Andhra Style Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Homestyle",
+      "description": "Homemade-style laddus with dates, nuts, ghee, and a traditional South Indian touch.",
+      "price": 449,
+      "mrp": 525,
+      "pack": "250 g",
+      "rating": 4.6,
+      "benefits": [
+        "Homestyle recipe",
+        "Rich ghee aroma",
+        "Traditional Indian taste"
+      ],
+      "colors": [
+        "#f3dfbd",
+        "#c18443",
+        "#7c4b35"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "honey-dry-fruit-laddu",
+      "name": "Honey Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Honey",
+      "description": "Natural honey laddus with almonds, cashews, pistachios, dates, and seeds.",
+      "price": 379,
+      "mrp": 455,
+      "pack": "250 g",
+      "rating": 4.5,
+      "benefits": [
+        "Honey-sweetened taste",
+        "Nut and seed blend",
+        "Soft chewy bite"
+      ],
+      "colors": [
+        "#fff0c8",
+        "#d69b33",
+        "#8b6630"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "handmade-premium-dry-fruit-laddu",
+      "name": "Handmade Premium Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Handmade",
+      "description": "Premium handmade laddus with dates, cashews, apricots, figs, pista, and almonds.",
+      "price": 549,
+      "mrp": 650,
+      "pack": "300 g",
+      "rating": 4.7,
+      "benefits": [
+        "Small-batch handmade",
+        "Premium dry fruit mix",
+        "Gift-ready quality"
+      ],
+      "colors": [
+        "#f4e8d8",
+        "#b47a35",
+        "#7b4661"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "no-refined-sugar-laddoo",
+      "name": "No Refined Sugar Dry Fruit Laddoo",
+      "category": "Laddus",
+      "tag": "Clean sweet",
+      "description": "A guilt-free dry fruit laddoo for healthy Indian sweet cravings.",
+      "price": 258,
+      "mrp": 320,
+      "pack": "180 g",
+      "rating": 4.6,
+      "benefits": [
+        "No refined sugar",
+        "Quick snack pack",
+        "Balanced dry fruit bite"
+      ],
+      "colors": [
+        "#eaf4ee",
+        "#246b45",
+        "#d69b33"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "rose-dry-fruit-laddu",
+      "name": "Rose Dry Fruit Laddu",
+      "category": "Laddus",
+      "tag": "Rose",
+      "description": "Premium dry fruit laddus with edible rose petals for weddings and festive gifting.",
+      "price": 599,
+      "mrp": 720,
+      "pack": "250 g",
+      "rating": 4.8,
+      "benefits": [
+        "Rose petal aroma",
+        "Premium gifting sweet",
+        "Festive presentation"
+      ],
+      "colors": [
+        "#f8dce2",
+        "#b44853",
+        "#d69b33"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "natural-turmeric-powder",
+      "name": "Natural Turmeric Powder",
+      "category": "Spices",
+      "tag": "Haldi",
+      "description": "Pure haldi powder for everyday Indian cooking, curries, dals, vegetables, and golden milk.",
+      "price": 149,
+      "mrp": 185,
+      "pack": "200 g",
+      "rating": 4.7,
+      "benefits": [
+        "Natural golden color",
+        "No added color",
+        "Fresh aromatic spice"
+      ],
+      "colors": [
+        "#fff0c8",
+        "#d69b33",
+        "#9d6d43"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "red-mirchi-powder",
+      "name": "Red Mirchi Powder",
+      "category": "Spices",
+      "tag": "Lal Mirch",
+      "description": "Pure red chilli powder for curries, tadka, chutneys, marinades, and everyday Indian cooking.",
+      "price": 129,
+      "mrp": 165,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Bold curry heat",
+        "Natural red color",
+        "No artificial color"
+      ],
+      "colors": [
+        "#ffe3dd",
+        "#c83b2f",
+        "#7b1f1a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "coriander-powder",
+      "name": "Coriander Powder",
+      "category": "Spices",
+      "tag": "Dhania",
+      "description": "Fresh dhania powder for curries, gravies, dals, sabzi, and everyday masala blends.",
+      "price": 99,
+      "mrp": 125,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Warm citrus aroma",
+        "Daily curry base",
+        "Finely ground"
+      ],
+      "colors": [
+        "#edf1c4",
+        "#a3aa4f",
+        "#686b2a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "whole-cumin-seeds",
+      "name": "Whole Cumin Seeds",
+      "category": "Spices",
+      "tag": "Jeera",
+      "description": "Natural jeera seeds for tadka, dal, sabzi, jeera rice, chutneys, and masala blends.",
+      "price": 159,
+      "mrp": 199,
+      "pack": "200 g",
+      "rating": 4.7,
+      "benefits": [
+        "Tadka essential",
+        "Earthy aroma",
+        "Clean whole seeds"
+      ],
+      "colors": [
+        "#eadac5",
+        "#9d6d43",
+        "#684324"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "cumin-powder",
+      "name": "Cumin Powder",
+      "category": "Spices",
+      "tag": "Jeera",
+      "description": "Roasted-style jeera powder for raita, curries, chaas, chaat, and finishing masalas.",
+      "price": 139,
+      "mrp": 175,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Earthy roasted taste",
+        "Great for raita",
+        "Aromatic powder"
+      ],
+      "colors": [
+        "#f3dfbd",
+        "#9d6d43",
+        "#5f3f2d"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "garam-masala",
+      "name": "Garam Masala",
+      "category": "Spices",
+      "tag": "Blend",
+      "description": "Aromatic Indian spice blend for curries, lentils, pulao, soups, and finishing flavor.",
+      "price": 149,
+      "mrp": 190,
+      "pack": "100 g",
+      "rating": 4.8,
+      "benefits": [
+        "Finishing masala",
+        "Warm aroma",
+        "Classic Indian blend"
+      ],
+      "colors": [
+        "#e8d6cb",
+        "#6a3b32",
+        "#28302d"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "mustard-seeds",
+      "name": "Mustard Seeds",
+      "category": "Spices",
+      "tag": "Rai",
+      "description": "Small mustard seeds for South Indian tempering, pickles, poha, dal, and chutneys.",
+      "price": 89,
+      "mrp": 110,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Tempering essential",
+        "Pickle friendly",
+        "Clean bold seeds"
+      ],
+      "colors": [
+        "#f4e8d8",
+        "#28302d",
+        "#d69b33"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "black-pepper-powder",
+      "name": "Black Pepper Powder",
+      "category": "Spices",
+      "tag": "Kali Mirch",
+      "description": "Sharp black pepper powder for soups, eggs, rasam, marinades, and everyday seasoning.",
+      "price": 199,
+      "mrp": 249,
+      "pack": "100 g",
+      "rating": 4.7,
+      "benefits": [
+        "Sharp warm spice",
+        "Fine grind",
+        "Kitchen seasoning staple"
+      ],
+      "colors": [
+        "#d9e2df",
+        "#28302d",
+        "#606b66"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "kashmiri-chilli-powder",
+      "name": "Kashmiri Chilli Powder",
+      "category": "Spices",
+      "tag": "Color",
+      "description": "Mild red chilli powder for rich curry color, tandoori marinades, gravies, and chutneys.",
+      "price": 179,
+      "mrp": 225,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Vibrant red color",
+        "Milder heat",
+        "Great for marinades"
+      ],
+      "colors": [
+        "#ffe3dd",
+        "#d45f3b",
+        "#8d211c"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "sambar-masala",
+      "name": "Sambar Masala",
+      "category": "Spices",
+      "tag": "South",
+      "description": "South Indian spice blend for sambar, kuzhambu-style curries, vegetables, and lentils.",
+      "price": 129,
+      "mrp": 165,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "South Indian blend",
+        "Dal and vegetable friendly",
+        "Balanced spice"
+      ],
+      "colors": [
+        "#f3dfbd",
+        "#c18443",
+        "#7b1f1a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "chaat-masala",
+      "name": "Chaat Masala",
+      "category": "Spices",
+      "tag": "Tangy",
+      "description": "Tangy masala for fruits, salads, chaats, fries, raita, sandwiches, and snacks.",
+      "price": 99,
+      "mrp": 125,
+      "pack": "100 g",
+      "rating": 4.5,
+      "benefits": [
+        "Tangy snack sprinkle",
+        "Great on fruit",
+        "Ready-to-use blend"
+      ],
+      "colors": [
+        "#f4e8d8",
+        "#9d6d43",
+        "#5b405c"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "kasuri-methi",
+      "name": "Kasuri Methi",
+      "category": "Spices",
+      "tag": "Methi",
+      "description": "Dried fenugreek leaves for butter masala, dal, paratha dough, curries, and gravies.",
+      "price": 79,
+      "mrp": 99,
+      "pack": "50 g",
+      "rating": 4.7,
+      "benefits": [
+        "Restaurant-style aroma",
+        "Crush-and-add leaves",
+        "Great for gravies"
+      ],
+      "colors": [
+        "#e9f2e8",
+        "#5c8d50",
+        "#315a38"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T11:04:29.315Z",
+      "updatedAt": "2026-05-22T11:04:29.315Z"
+    }
+  ],
+  "customers": [],
+  "addresses": [],
+  "orders": [],
+  "payments": [],
+  "otpVerifications": [],
+  "notifications": [],
+  "auditLogs": []
+}
