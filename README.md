@@ -13,6 +13,9 @@ Premium storefront for dry fruits, healthy laddus, Indian spices, seeds, mixes, 
 - Backend APIs for products, OTP login, orders, payments, notification queue, and audit logs
 - Owner product manager at `admin.html`
 - Admin order dashboard with order status updates
+- Admin dashboard summary for revenue, orders, customers, and products
+- CSV exports for products, orders, and customers
+- Stock updates from the admin product list
 - Customer OTP login/signup drawer in the storefront
 - Custom products can include future photo URLs and are saved in backend storage
 
