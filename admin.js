@@ -13,10 +13,17 @@ const summaryRevenue = document.querySelector("#summaryRevenue");
 const summaryOrders = document.querySelector("#summaryOrders");
 const summaryCustomers = document.querySelector("#summaryCustomers");
 const summaryProducts = document.querySelector("#summaryProducts");
+const orderDetailPanel = document.querySelector("#orderDetailPanel");
+const orderDetailTitle = document.querySelector("#orderDetailTitle");
+const orderDetailContent = document.querySelector("#orderDetailContent");
+const printInvoice = document.querySelector("#printInvoice");
+const closeOrderDetail = document.querySelector("#closeOrderDetail");
 
 let productCache = [];
 let orderCache = [];
 let customerCache = [];
+let addressCache = [];
+let paymentCache = [];
 let summaryCache = {};
 
 function currency(value) {
@@ -58,6 +65,8 @@ async function loadOrders() {
     if (!response.ok) throw new Error(data.error || "Could not load orders");
     orderCache = data.orders;
     customerCache = data.customers;
+    addressCache = data.addresses || [];
+    paymentCache = data.payments || [];
   } catch (error) {
     orderList.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Check the admin PIN and backend server.</span></div>`;
   }
@@ -182,6 +191,7 @@ function renderOrders() {
             <span>${order.items.map((item) => `${item.name} x${item.qty}`).join(", ")}</span>
           </div>
           <div class="admin-product-actions">
+            <button type="button" data-order-detail="${order.id}">Details</button>
             <select data-order-status="${order.id}">
               ${["placed", "packed", "shipped", "delivered", "cancelled", "refunded"]
                 .map((status) => `<option value="${status}" ${status === order.status ? "selected" : ""}>${status}</option>`)
@@ -192,6 +202,85 @@ function renderOrders() {
       `;
     })
     .join("");
+}
+
+function renderOrderDetail(orderId) {
+  const order = orderCache.find((entry) => entry.id === orderId);
+  if (!order) return;
+  const customer = customerCache.find((entry) => entry.id === order.customerId) || {};
+  const address = addressCache.find((entry) => entry.id === order.addressId) || {};
+  const payment = paymentCache.find((entry) => entry.orderId === order.id) || {};
+  orderDetailTitle.textContent = `Order ${order.id}`;
+  orderDetailContent.innerHTML = `
+    <div class="invoice-card" id="printableInvoice">
+      <div class="invoice-head">
+        <div>
+          <strong>Seedora</strong>
+          <span>Premium dry fruits, laddus, spices, and gifts</span>
+          <span>Phone: +91 97045 97062</span>
+        </div>
+        <div>
+          <strong>${order.id}</strong>
+          <span>${new Date(order.createdAt).toLocaleString("en-IN")}</span>
+          <span>Status: ${order.status}</span>
+        </div>
+      </div>
+      <div class="invoice-grid">
+        <section>
+          <h3>Customer</h3>
+          <span>${customer.name || "Customer"}</span>
+          <span>${customer.mobile || ""}</span>
+          <span>${customer.email || ""}</span>
+        </section>
+        <section>
+          <h3>Delivery</h3>
+          <span>${address.address || ""}</span>
+          <span>${address.area || ""}</span>
+          <span>Pincode: ${address.pincode || ""}</span>
+        </section>
+        <section>
+          <h3>Payment</h3>
+          <span>${order.paymentMethod}</span>
+          <span>${order.paymentStatus}</span>
+          <span>${payment.provider || "manual-or-gateway"}</span>
+        </section>
+      </div>
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Pack</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${order.items
+            .map(
+              (item) => `
+              <tr>
+                <td>${item.name}</td>
+                <td>${item.pack}</td>
+                <td>${item.qty}</td>
+                <td>${currency(item.price)}</td>
+                <td>${currency(item.lineTotal)}</td>
+              </tr>
+            `,
+            )
+            .join("")}
+        </tbody>
+      </table>
+      <div class="invoice-total">
+        <span>Subtotal ${currency(order.subtotal)}</span>
+        <span>Discount ${currency(order.couponDiscount)}</span>
+        <span>Delivery ${order.delivery === 0 ? "Free" : currency(order.delivery)}</span>
+        <strong>Total ${currency(order.total)}</strong>
+      </div>
+    </div>
+  `;
+  orderDetailPanel.hidden = false;
+  orderDetailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function renderCustomers() {
@@ -310,6 +399,12 @@ orderList.addEventListener("change", async (event) => {
   }
 });
 
+orderList.addEventListener("click", (event) => {
+  const detail = event.target.closest("[data-order-detail]");
+  if (!detail) return;
+  renderOrderDetail(detail.dataset.orderDetail);
+});
+
 resetForm.addEventListener("click", () => {
   const pin = adminPin();
   form.reset();
@@ -338,6 +433,14 @@ refreshOrders.addEventListener("click", async () => {
   renderOrders();
   renderCustomers();
   renderSummary();
+});
+
+closeOrderDetail.addEventListener("click", () => {
+  orderDetailPanel.hidden = true;
+});
+
+printInvoice.addEventListener("click", () => {
+  window.print();
 });
 
 async function initAdmin() {
