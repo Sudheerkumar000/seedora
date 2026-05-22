@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-22T11:44:32.687Z"
+    "updatedAt": "2026-05-22T23:25:40.418Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -1103,6 +1103,448 @@
       "image": "",
       "createdAt": "2026-05-22T11:04:29.315Z",
       "updatedAt": "2026-05-22T11:04:29.315Z"
+    },
+    {
+      "id": "premium-makhana",
+      "name": "Premium Fox Nuts (Makhana)",
+      "category": "Dried Fruits",
+      "tag": "Roast ready",
+      "description": "Light and crunchy makhana for fasting snacks, roasted masala bowls, and healthy evening cravings.",
+      "price": 229,
+      "mrp": 290,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Large popped fox nuts",
+        "Low-oil snack option",
+        "Great for roasting"
+      ],
+      "colors": [
+        "#f8f1df",
+        "#d8bc7a",
+        "#8b6630"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "chilgoza-pine-nuts",
+      "name": "Pine Nuts (Chilgoza)",
+      "category": "Nuts",
+      "tag": "Luxury",
+      "description": "Premium chilgoza pine nuts for festive sweets, desserts, salads, and rich Indian gravies.",
+      "price": 999,
+      "mrp": 1199,
+      "pack": "100 g",
+      "rating": 4.7,
+      "benefits": [
+        "Premium chilgoza kernels",
+        "Rich buttery taste",
+        "Luxury gifting pick"
+      ],
+      "colors": [
+        "#f5ebcf",
+        "#c7a15a",
+        "#75512b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "dry-coconut-slices",
+      "name": "Dry Coconut Slices",
+      "category": "Dried Fruits",
+      "tag": "Traditional",
+      "description": "Clean dry coconut slices for pooja prasadam, sweets, chutneys, and daily kitchen use.",
+      "price": 129,
+      "mrp": 165,
+      "pack": "200 g",
+      "rating": 4.4,
+      "benefits": [
+        "Clean sliced pieces",
+        "Traditional Indian use",
+        "Useful for sweets and snacks"
+      ],
+      "colors": [
+        "#fbf4e8",
+        "#b98858",
+        "#70452b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "mixed-dry-berries",
+      "name": "Mixed Dry Berries",
+      "category": "Dried Fruits",
+      "tag": "Breakfast",
+      "description": "A colorful dry berry mix for oats, cereal, cakes, trail mixes, and lunch boxes.",
+      "price": 329,
+      "mrp": 399,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Sweet-tart berry blend",
+        "Breakfast friendly",
+        "Good for baking"
+      ],
+      "colors": [
+        "#f6d9df",
+        "#b44853",
+        "#563142"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "dried-prunes",
+      "name": "Dried Prunes",
+      "category": "Dried Fruits",
+      "tag": "Fiber rich",
+      "description": "Soft dried prunes with a deep fruity taste for breakfast, baking, and daily nutrition.",
+      "price": 299,
+      "mrp": 360,
+      "pack": "250 g",
+      "rating": 4.5,
+      "benefits": [
+        "Soft chewy texture",
+        "Naturally sweet",
+        "Breakfast staple"
+      ],
+      "colors": [
+        "#e7d0dd",
+        "#5a304d",
+        "#2f1c2b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "hazelnuts",
+      "name": "Hazelnuts",
+      "category": "Nuts",
+      "tag": "Baking",
+      "description": "Crunchy hazelnuts for chocolate desserts, baking, nut butters, and premium snacking.",
+      "price": 549,
+      "mrp": 660,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Crunchy whole nuts",
+        "Dessert friendly",
+        "Premium snack quality"
+      ],
+      "colors": [
+        "#ead7bc",
+        "#9d6738",
+        "#57351f"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "pecans",
+      "name": "Pecans",
+      "category": "Nuts",
+      "tag": "Premium",
+      "description": "Rich pecans for cakes, granola, salads, gifting boxes, and slow snacking.",
+      "price": 649,
+      "mrp": 780,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Rich caramel-like bite",
+        "Good for baking",
+        "Premium gifting nut"
+      ],
+      "colors": [
+        "#ecd8c3",
+        "#8b4f32",
+        "#4c2b20"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "sunflower-seeds",
+      "name": "Sunflower Seeds",
+      "category": "Seeds",
+      "tag": "Daily seeds",
+      "description": "Mild sunflower seeds for salads, breakfast bowls, trail mixes, and seed cycling.",
+      "price": 139,
+      "mrp": 180,
+      "pack": "200 g",
+      "rating": 4.4,
+      "benefits": [
+        "Clean hulled seeds",
+        "Mild nutty taste",
+        "Everyday seed mix"
+      ],
+      "colors": [
+        "#f5ebd0",
+        "#b9a05b",
+        "#64502b"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "sesame-seeds",
+      "name": "Sesame Seeds (Til)",
+      "category": "Seeds",
+      "tag": "Indian kitchen",
+      "description": "Clean sesame seeds for til laddus, chutneys, podi, bakery toppings, and seasoning.",
+      "price": 99,
+      "mrp": 135,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Cleaned til seeds",
+        "Useful for sweets and podi",
+        "Daily kitchen staple"
+      ],
+      "colors": [
+        "#f8f2df",
+        "#d8c68c",
+        "#7a6334"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "watermelon-seeds",
+      "name": "Watermelon Seeds",
+      "category": "Seeds",
+      "tag": "Protein",
+      "description": "Premium watermelon seeds for smoothies, snacks, sweets, and healthy seed blends.",
+      "price": 189,
+      "mrp": 240,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Clean kernels",
+        "Good for seed mixes",
+        "Plant protein source"
+      ],
+      "colors": [
+        "#f0ead8",
+        "#8fa574",
+        "#40533a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "sabja-basil-seeds",
+      "name": "Basil Seeds (Sabja)",
+      "category": "Seeds",
+      "tag": "Cooling",
+      "description": "Sabja seeds for falooda, lemon water, summer drinks, puddings, and soaked recipes.",
+      "price": 149,
+      "mrp": 199,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Good for soaked drinks",
+        "Summer kitchen staple",
+        "Clean black seeds"
+      ],
+      "colors": [
+        "#e0e5df",
+        "#202823",
+        "#69746a"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "hemp-seeds",
+      "name": "Hemp Seeds",
+      "category": "Seeds",
+      "tag": "Protein",
+      "description": "Nutty hemp seeds for smoothies, salads, oats, protein bowls, and daily wellness mixes.",
+      "price": 349,
+      "mrp": 420,
+      "pack": "200 g",
+      "rating": 4.6,
+      "benefits": [
+        "Nutty soft kernels",
+        "Protein-rich seed",
+        "Breakfast friendly"
+      ],
+      "colors": [
+        "#e5ead1",
+        "#889a5d",
+        "#465336"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "fenugreek-seeds",
+      "name": "Fenugreek Seeds (Methi)",
+      "category": "Seeds",
+      "tag": "Indian kitchen",
+      "description": "Whole methi seeds for pickles, tempering, spice blends, sprouts, and curry bases.",
+      "price": 69,
+      "mrp": 95,
+      "pack": "200 g",
+      "rating": 4.4,
+      "benefits": [
+        "Whole methi dana",
+        "Useful for pickles",
+        "Everyday masala staple"
+      ],
+      "colors": [
+        "#f0dfba",
+        "#b78035",
+        "#67431d"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "poppy-seeds",
+      "name": "Poppy Seeds (Khus Khus)",
+      "category": "Seeds",
+      "tag": "Traditional",
+      "description": "Fine khus khus for Indian sweets, gravies, kormas, and traditional paste recipes.",
+      "price": 249,
+      "mrp": 310,
+      "pack": "100 g",
+      "rating": 4.5,
+      "benefits": [
+        "Clean fine seeds",
+        "Traditional gravy base",
+        "Premium small pack"
+      ],
+      "colors": [
+        "#eee9de",
+        "#aaa193",
+        "#5e5a51"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "fennel-seeds",
+      "name": "Fennel Seeds (Saunf)",
+      "category": "Seeds",
+      "tag": "Digestive",
+      "description": "Aromatic saunf for mukhwas, tea, spice blends, pickles, and Indian curries.",
+      "price": 89,
+      "mrp": 120,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Aromatic whole saunf",
+        "Good for tea and mukhwas",
+        "Daily kitchen staple"
+      ],
+      "colors": [
+        "#edf0d2",
+        "#9aac58",
+        "#566338"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "coriander-seeds",
+      "name": "Coriander Seeds (Dhaniya)",
+      "category": "Seeds",
+      "tag": "Indian kitchen",
+      "description": "Whole dhaniya seeds for roasting, grinding fresh masala, pickles, and curries.",
+      "price": 79,
+      "mrp": 110,
+      "pack": "200 g",
+      "rating": 4.5,
+      "benefits": [
+        "Whole coriander seeds",
+        "Roast and grind fresh",
+        "Essential Indian spice seed"
+      ],
+      "colors": [
+        "#efe2b8",
+        "#b0a451",
+        "#6c6231"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
+    },
+    {
+      "id": "nigella-seeds",
+      "name": "Nigella Seeds (Kalonji)",
+      "category": "Seeds",
+      "tag": "Pickle spice",
+      "description": "Kalonji seeds for pickles, naan topping, spice mixes, and North Indian tempering.",
+      "price": 119,
+      "mrp": 155,
+      "pack": "200 g",
+      "rating": 4.4,
+      "benefits": [
+        "Clean black kalonji",
+        "Good for pickles",
+        "Aromatic spice seed"
+      ],
+      "colors": [
+        "#dadbd3",
+        "#1e2623",
+        "#60685f"
+      ],
+      "stock": 100,
+      "active": true,
+      "image": "",
+      "createdAt": "2026-05-22T23:25:40.418Z",
+      "updatedAt": "2026-05-22T23:25:40.418Z"
     }
   ],
   "customers": [],
