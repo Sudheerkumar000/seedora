@@ -13,6 +13,9 @@ The local backend supports:
 - Address records
 - Order creation
 - Admin order listing and status updates
+- Admin dashboard summary
+- CSV exports for products, orders, and customers
+- Stock update workflow
 - Payment records
 - Notification queue
 - Audit logs
