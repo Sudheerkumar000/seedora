@@ -629,6 +629,18 @@ const productArt = {
   "kasuri-methi": ["methi-pack", "methi-leaf", "methi-leaf", "methi-leaf"],
 };
 
+async function loadBackendCatalog() {
+  try {
+    const response = await fetch("/api/products");
+    if (!response.ok) return;
+    const catalog = await response.json();
+    products = catalog.products;
+    categories = ["All", ...catalog.categories.map((category) => category.name)];
+  } catch {
+    products = [...products, ...customProducts()];
+  }
+}
+
 function currency(value) {
   return `Rs. ${value.toLocaleString("en-IN")}`;
 }
@@ -1139,7 +1151,7 @@ applyCoupon.addEventListener("click", () => {
   renderCart();
 });
 
-checkoutForm.addEventListener("submit", (event) => {
+checkoutForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!cart.size) {
     orderNote.textContent = "Add at least one Seedora item before checkout.";
@@ -1148,6 +1160,7 @@ checkoutForm.addEventListener("submit", (event) => {
   const data = new FormData(checkoutForm);
   const name = data.get("name").toString().trim().split(" ")[0] || "there";
   const mobile = data.get("mobile").toString().trim();
+  const email = data.get("email").toString().trim();
   const pincode = data.get("pincode").toString().trim();
   const payment = data.get("payment").toString();
   if (!/^\d{10}$/.test(mobile)) {
@@ -1158,7 +1171,41 @@ checkoutForm.addEventListener("submit", (event) => {
     showToast("Please enter a valid 6-digit pincode.");
     return;
   }
-  const orderId = `SDR${Date.now().toString().slice(-6)}`;
+  let orderId = `SDR${Date.now().toString().slice(-6)}`;
+  try {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        customer: {
+          name: data.get("name").toString().trim(),
+          mobile,
+          email,
+          consent: true,
+        },
+        address: {
+          area: data.get("area").toString().trim(),
+          address: data.get("address").toString().trim(),
+          pincode,
+        },
+        paymentMethod: payment,
+        couponCode: appliedCoupon,
+        items: [...cart.values()].map((item) => ({
+          productId: item.id,
+          pack: item.pack,
+          qty: item.qty,
+          price: item.price,
+          mrp: item.mrp,
+        })),
+      }),
+    });
+    if (response.ok) {
+      const saved = await response.json();
+      orderId = saved.order.id;
+    }
+  } catch {
+    showToast("Order saved locally. Backend is not reachable.");
+  }
   orderReceipt.hidden = false;
   orderReceipt.innerHTML = `
     <strong>Order ${orderId} confirmed</strong>
@@ -1174,6 +1221,11 @@ checkoutForm.addEventListener("submit", (event) => {
   renderCart();
 });
 
-renderCategories();
-renderProducts();
-renderCart();
+async function initSeedora() {
+  await loadBackendCatalog();
+  renderCategories();
+  renderProducts();
+  renderCart();
+}
+
+initSeedora();
