@@ -10,8 +10,9 @@ Premium storefront for dry fruits, healthy laddus, Indian spices, seeds, mixes, 
 - Product detail drawer with pack-size pricing
 - Coupon support with `SEEDORA10`
 - Checkout with all-India delivery, UPI, cards/net banking, wallets, and cash on delivery
+- Backend APIs for products, OTP login, orders, payments, notification queue, and audit logs
 - Owner product manager at `admin.html`
-- Custom products can include future photo URLs and are saved in browser storage
+- Custom products can include future photo URLs and are saved in backend storage
 
 ## Business Details
 
@@ -23,10 +24,10 @@ UPI is the default because it is the most-used digital payment method in India b
 
 ## Run Locally
 
-Open `index.html` directly in a browser, or run a local static server:
+Run the backend:
 
 ```sh
-python3 -m http.server 4173
+npm start
 ```
 
 Then open:
@@ -40,6 +41,14 @@ Admin/product manager:
 ```text
 http://127.0.0.1:4173/admin.html
 ```
+
+Default local admin PIN:
+
+```text
+9704597062
+```
+
+Local seed data is stored in `data/seed.json`. Live local data is stored in `data/db.json`, which is ignored by git so customer/order data is not pushed to GitHub.
 
 ## Next Production Steps
 
