@@ -148,6 +148,20 @@
           <div id="adminCustomerList" class="admin-product-list"></div>
         </section>
       </section>
+
+      <section class="admin-products order-detail-panel" id="orderDetailPanel" hidden>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Packing invoice</p>
+            <h2 id="orderDetailTitle">Order details</h2>
+          </div>
+          <div class="admin-export-row">
+            <button class="reset-button" id="printInvoice" type="button">Print</button>
+            <button class="reset-button" id="closeOrderDetail" type="button">Close</button>
+          </div>
+        </div>
+        <div id="orderDetailContent"></div>
+      </section>
     </main>
 
     <script src="admin.js"></script>
