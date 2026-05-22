@@ -2008,6 +2008,33 @@ h1 {
   align-items: start;
 }
 
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.admin-summary article {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.admin-summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.admin-summary strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.55rem;
+}
+
 .admin-form,
 .admin-products {
   padding: 18px;
@@ -2091,7 +2118,15 @@ h1 {
 
 .admin-product-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+}
+
+.admin-export-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: end;
 }
 
 .admin-product-actions button {
@@ -2112,6 +2147,23 @@ h1 {
   font-weight: 850;
 }
 
+.stock-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 850;
+}
+
+.stock-edit input {
+  width: 72px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
 .uploaded-photo img {
   width: 100%;
   height: 100%;
@@ -2127,7 +2179,8 @@ h1 {
 @media (max-width: 980px) {
   .hero,
   .shop-layout,
-  .admin-layout {
+  .admin-layout,
+  .admin-summary {
     grid-template-columns: 1fr;
   }
 
