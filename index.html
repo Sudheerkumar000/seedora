@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seedora | Premium Dry Fruits</title>
+    <link rel="icon" href="seedora-logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#home" aria-label="Seedora home">
+          <img class="brand-mark" src="seedora-logo.svg" alt="" />
+          <span>
+            <strong>Seedora</strong>
+            <small>Premium dry fruits</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#shop">Shop</a>
+          <a href="#gift">Gifts</a>
+          <a href="#plans">Plans</a>
+        </nav>
+        <div class="header-actions">
+          <button class="icon-button" id="wishlistButton" type="button" aria-label="Show wishlist">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
+            </svg>
+            <span id="wishlistCount">0</span>
+          </button>
+          <button class="icon-button" id="cartButton" type="button" aria-label="Open cart">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.3 6h15l-1.6 8.3a2 2 0 0 1-2 1.7H8a2 2 0 0 1-2-1.7L4.7 3H2" />
+              <circle cx="9" cy="20" r="1.4" />
+              <circle cx="18" cy="20" r="1.4" />
+            </svg>
+            <span id="cartCount">0</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" id="home" aria-labelledby="heroTitle">
+          <div class="hero-copy">
+            <p class="eyebrow">Fresh harvest batches</p>
+            <h1 id="heroTitle">Seedora</h1>
+            <p class="hero-line">
+              Premium dry fruits, seeds, date bites, and gifting boxes packed for daily healthy snacking.
+            </p>
+            <div class="hero-actions">
+              <a class="primary-action" href="#shop">Shop bestsellers</a>
+              <a class="secondary-action" href="#gift">View gift boxes</a>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Seedora dry fruit assortment">
+            <div class="bowl">
+              <span class="nut almond"></span>
+              <span class="nut cashew"></span>
+              <span class="nut pista"></span>
+              <span class="nut raisin"></span>
+              <span class="nut fig"></span>
+              <span class="nut almond second"></span>
+              <span class="nut cashew second"></span>
+              <span class="nut pista second"></span>
+              <span class="nut raisin second"></span>
+            </div>
+          <div class="pack">
+              <img src="seedora-logo.svg" alt="" />
+              <span>SEEDORA</span>
+              <strong>Daily Nut Mix</strong>
+              <small>250 g</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="quick-strip" aria-label="Seedora highlights">
+          <article>
+            <span>40</span>
+            <p>curated products</p>
+          </article>
+          <article>
+            <span>7</span>
+            <p>snack categories</p>
+          </article>
+          <article>
+            <span>2-day</span>
+            <p>fresh dispatch</p>
+          </article>
+        </section>
+
+        <section class="shop-layout" id="shop">
+          <aside class="filters" aria-label="Shop filters">
+            <div class="panel-head">
+              <p class="eyebrow">Catalog</p>
+              <h2>Shop Seedora</h2>
+            </div>
+            <label class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m21 21-4.4-4.4" />
+                <circle cx="11" cy="11" r="7" />
+              </svg>
+              <input id="searchInput" type="search" placeholder="Search almonds, masala, mirchi..." />
+            </label>
+            <div class="category-list" id="categoryList" aria-label="Categories"></div>
+            <div class="sort-row">
+              <label for="sortSelect">Sort</label>
+              <select id="sortSelect">
+                <option value="featured">Featured</option>
+                <option value="price-low">Price low to high</option>
+                <option value="price-high">Price high to low</option>
+                <option value="rating">Top rated</option>
+                <option value="discount">Best discount</option>
+              </select>
+            </div>
+            <div class="sort-row">
+              <label for="priceFilter">Budget</label>
+              <select id="priceFilter">
+                <option value="all">All prices</option>
+                <option value="under-200">Under Rs. 200</option>
+                <option value="200-500">Rs. 200 to Rs. 500</option>
+                <option value="500-plus">Above Rs. 500</option>
+              </select>
+            </div>
+            <button class="reset-button" id="resetFilters" type="button">Reset filters</button>
+          </aside>
+
+          <section class="products-area" aria-live="polite">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Bestsellers</p>
+                <h2 id="productHeading">Premium Picks</h2>
+              </div>
+              <span id="resultCount"></span>
+            </div>
+            <div class="quick-filters" id="quickFilters" aria-label="Quick filters">
+              <button class="active" type="button" data-quick="all">All</button>
+              <button type="button" data-quick="bestsellers">Bestsellers</button>
+              <button type="button" data-quick="under-200">Under Rs. 200</button>
+              <button type="button" data-quick="spices">Spices</button>
+              <button type="button" data-quick="gifts">Gift ready</button>
+              <button type="button" data-quick="wishlist">Wishlist</button>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+            <div class="empty-results" id="emptyResults" hidden>
+              <strong>No matching Seedora products.</strong>
+              <span>Try another category, search term, or budget.</span>
+            </div>
+          </section>
+        </section>
+
+        <section class="feature-band" id="gift">
+          <div>
+            <p class="eyebrow">Festive gifting</p>
+            <h2>Curated boxes for clients, weddings, and family celebrations.</h2>
+          </div>
+          <button class="primary-action" type="button" data-open-product="gift-box">Build a gift box</button>
+        </section>
+
+        <section class="plans-band" id="plans">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Subscriptions</p>
+              <h2>Monthly snack plans</h2>
+            </div>
+          </div>
+          <div class="plan-grid">
+            <article class="plan">
+              <span>Everyday</span>
+              <h3>Daily Nutrition Pack</h3>
+              <p>Almonds, walnuts, raisins, pumpkin seeds, and dates in measured weekly pouches.</p>
+              <button type="button" data-add-plan="Daily Nutrition Pack">Add plan</button>
+            </article>
+            <article class="plan">
+              <span>Family</span>
+              <h3>Kitchen Refill Box</h3>
+              <p>Bulk staples for breakfast bowls, sweets, smoothies, and evening snacks.</p>
+              <button type="button" data-add-plan="Kitchen Refill Box">Add plan</button>
+            </article>
+            <article class="plan">
+              <span>Office</span>
+              <h3>Desk Snack Rotation</h3>
+              <p>Roasted mixes, date bites, trail mix cups, and low-sugar treats for teams.</p>
+              <button type="button" data-add-plan="Desk Snack Rotation">Add plan</button>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-brand">
+          <a class="brand" href="#home" aria-label="Seedora home">
+            <img class="brand-mark" src="seedora-logo.svg" alt="" />
+            <span>
+              <strong>Seedora</strong>
+              <small>Premium dry fruits</small>
+            </span>
+          </a>
+          <p>Dry fruits, healthy laddus, Indian spices, seeds, mixes, and festive gifts packed fresh for Indian homes.</p>
+        </div>
+        <div class="footer-grid">
+          <div>
+            <h3>Shop</h3>
+            <a href="#shop" data-footer-category="Nuts">Nuts</a>
+            <a href="#shop" data-footer-category="Laddus">Dry Fruit Laddus</a>
+            <a href="#shop" data-footer-category="Spices">Indian Spices</a>
+            <a href="#gift">Gift Boxes</a>
+          </div>
+          <div>
+            <h3>Support</h3>
+            <a href="tel:+919704597062">+91 97045 97062</a>
+            <a href="mailto:hello@seedora.in">hello@seedora.in</a>
+            <span>10 AM to 7 PM</span>
+            <span>Monday to Saturday</span>
+          </div>
+          <div>
+            <h3>Promise</h3>
+            <span>Fresh dispatch in 24 hours</span>
+            <span>Free delivery above Rs. 999</span>
+            <span>All India delivery</span>
+            <span>UPI, cards, net banking, wallets, COD</span>
+            <span>No artificial color in spices</span>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Seedora. All rights reserved.</span>
+          <a href="admin.html">Manage products</a>
+        </div>
+      </footer>
+    </div>
+
+    <div class="drawer-overlay" id="overlay" hidden></div>
+
+    <aside class="drawer" id="productDrawer" aria-label="Product details" aria-hidden="true">
+      <button class="close-button" type="button" data-close-drawer aria-label="Close product details">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div id="productDetails"></div>
+    </aside>
+
+    <aside class="drawer cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
+      <button class="close-button" type="button" data-close-drawer aria-label="Close cart">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="cart-head">
+        <p class="eyebrow">Seedora bag</p>
+        <h2>Your cart</h2>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-summary">
+        <div>
+          <span>You save</span>
+          <strong id="savings">Rs. 0</strong>
+        </div>
+        <div>
+          <span>Discount</span>
+          <strong id="discount">Rs. 0</strong>
+        </div>
+        <div>
+          <span>Subtotal</span>
+          <strong id="subtotal">Rs. 0</strong>
+        </div>
+        <div>
+          <span>Delivery</span>
+          <strong id="delivery">Rs. 0</strong>
+        </div>
+        <div class="total">
+          <span>Total</span>
+          <strong id="total">Rs. 0</strong>
+        </div>
+      </div>
+      <div class="coupon-row">
+        <input id="couponInput" type="text" placeholder="Coupon code" />
+        <button id="applyCoupon" type="button">Apply</button>
+      </div>
+      <p class="delivery-note" id="deliveryNote">Free delivery on orders above Rs. 999.</p>
+      <form class="checkout" id="checkoutForm">
+        <label>
+          Name
+          <input type="text" name="name" placeholder="Customer name" required />
+        </label>
+        <label>
+          Mobile
+          <input type="tel" name="mobile" placeholder="10-digit mobile" required />
+        </label>
+        <label>
+          Delivery area
+          <input type="text" name="area" placeholder="City or locality" required />
+        </label>
+        <label>
+          Full address
+          <textarea name="address" placeholder="House number, street, landmark" required></textarea>
+        </label>
+        <label>
+          Pincode
+          <input type="text" name="pincode" placeholder="6-digit pincode" inputmode="numeric" required />
+        </label>
+        <div class="payment-options" aria-label="Payment method">
+          <label><input type="radio" name="payment" value="UPI" checked /> UPI: PhonePe, Google Pay, Paytm, BHIM</label>
+          <label><input type="radio" name="payment" value="Cards or net banking" /> Cards or net banking</label>
+          <label><input type="radio" name="payment" value="Wallets" /> Wallets</label>
+          <label><input type="radio" name="payment" value="Cash on delivery" /> Cash on delivery</label>
+        </div>
+        <button class="primary-action" type="submit">Place order</button>
+      </form>
+      <div class="order-receipt" id="orderReceipt" hidden></div>
+      <p class="order-note" id="orderNote" role="status"></p>
+    </aside>
+
+    <script src="app.js"></script>
+  </body>
+</html>
