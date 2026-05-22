@@ -405,7 +405,7 @@ async function handleApi(req, res, url) {
 
   if (req.method === "GET" && url.pathname === "/api/admin/orders") {
     if (!requireAdmin(req, res)) return;
-    json(res, 200, { orders: db.orders, customers: db.customers, payments: db.payments });
+    json(res, 200, { orders: db.orders, customers: db.customers, addresses: db.addresses, payments: db.payments });
     return;
   }
 
