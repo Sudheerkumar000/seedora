@@ -12,6 +12,7 @@ The local backend supports:
 - Customer records
 - Address records
 - Order creation
+- Admin order listing and status updates
 - Payment records
 - Notification queue
 - Audit logs
