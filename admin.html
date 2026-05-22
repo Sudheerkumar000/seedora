@@ -28,6 +28,25 @@
         </div>
       </section>
 
+      <section class="admin-summary" id="adminSummary">
+        <article>
+          <span>Revenue</span>
+          <strong id="summaryRevenue">Rs. 0</strong>
+        </article>
+        <article>
+          <span>Orders</span>
+          <strong id="summaryOrders">0</strong>
+        </article>
+        <article>
+          <span>Customers</span>
+          <strong id="summaryCustomers">0</strong>
+        </article>
+        <article>
+          <span>Products</span>
+          <strong id="summaryProducts">0</strong>
+        </article>
+      </section>
+
       <section class="admin-layout">
         <form class="admin-form" id="productForm">
           <input type="hidden" name="id" />
@@ -96,7 +115,10 @@
               <p class="eyebrow">Custom catalog</p>
               <h2>Added products</h2>
             </div>
-            <button class="reset-button" id="exportProducts" type="button">Export JSON</button>
+            <div class="admin-export-row">
+              <button class="reset-button" id="exportProducts" type="button">Export JSON</button>
+              <button class="reset-button" id="exportProductsCsv" type="button">Export CSV</button>
+            </div>
           </div>
           <div id="adminProductList" class="admin-product-list"></div>
         </section>
@@ -107,9 +129,23 @@
               <p class="eyebrow">Operations</p>
               <h2>Orders</h2>
             </div>
-            <button class="reset-button" id="refreshOrders" type="button">Refresh</button>
+            <div class="admin-export-row">
+              <button class="reset-button" id="refreshOrders" type="button">Refresh</button>
+              <button class="reset-button" id="exportOrdersCsv" type="button">Export CSV</button>
+            </div>
           </div>
           <div id="adminOrderList" class="admin-product-list"></div>
+        </section>
+
+        <section class="admin-products">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Customers</p>
+              <h2>Customer list</h2>
+            </div>
+            <button class="reset-button" id="exportCustomersCsv" type="button">Export CSV</button>
+          </div>
+          <div id="adminCustomerList" class="admin-product-list"></div>
         </section>
       </section>
     </main>
