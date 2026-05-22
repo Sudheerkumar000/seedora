@@ -3,8 +3,12 @@ const list = document.querySelector("#adminProductList");
 const note = document.querySelector("#adminNote");
 const resetForm = document.querySelector("#resetForm");
 const exportProducts = document.querySelector("#exportProducts");
+const orderList = document.querySelector("#adminOrderList");
+const refreshOrders = document.querySelector("#refreshOrders");
 
 let productCache = [];
+let orderCache = [];
+let customerCache = [];
 
 function slug(value) {
   return value
@@ -25,6 +29,24 @@ async function loadProducts() {
     productCache = data.products;
   } catch {
     productCache = JSON.parse(localStorage.getItem("seedoraCustomProducts") || "[]");
+  }
+}
+
+async function loadOrders() {
+  if (!adminPin()) {
+    orderList.innerHTML = `<div class="empty-results"><strong>Enter admin PIN.</strong><span>Orders are protected.</span></div>`;
+    return;
+  }
+  try {
+    const response = await fetch("/api/admin/orders", {
+      headers: { "x-admin-pin": adminPin() },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not load orders");
+    orderCache = data.orders;
+    customerCache = data.customers;
+  } catch (error) {
+    orderList.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Check the admin PIN and backend server.</span></div>`;
   }
 }
 
@@ -56,6 +78,19 @@ async function deleteProduct(id) {
   }
 }
 
+async function updateOrderStatus(id, status) {
+  const response = await fetch(`/api/admin/orders/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+      "x-admin-pin": adminPin(),
+    },
+    body: JSON.stringify({ status }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Could not update order");
+}
+
 function render() {
   if (!productCache.length) {
     list.innerHTML = `<div class="empty-results"><strong>No products found.</strong><span>Add your first product using the form.</span></div>`;
@@ -77,6 +112,36 @@ function render() {
       </article>
     `,
     )
+    .join("");
+}
+
+function renderOrders() {
+  if (!orderCache.length) {
+    orderList.innerHTML = `<div class="empty-results"><strong>No orders yet.</strong><span>New checkout orders will appear here.</span></div>`;
+    return;
+  }
+  orderList.innerHTML = orderCache
+    .slice()
+    .reverse()
+    .map((order) => {
+      const customer = customerCache.find((entry) => entry.id === order.customerId) || {};
+      return `
+        <article class="admin-product">
+          <div>
+            <strong>${order.id} · ${order.status}</strong>
+            <span>${customer.name || "Customer"} · ${customer.mobile || ""} · Rs. ${Number(order.total).toLocaleString("en-IN")}</span>
+            <span>${order.items.map((item) => `${item.name} x${item.qty}`).join(", ")}</span>
+          </div>
+          <div class="admin-product-actions">
+            <select data-order-status="${order.id}">
+              ${["placed", "packed", "shipped", "delivered", "cancelled", "refunded"]
+                .map((status) => `<option value="${status}" ${status === order.status ? "selected" : ""}>${status}</option>`)
+                .join("")}
+            </select>
+          </div>
+        </article>
+      `;
+    })
     .join("");
 }
 
@@ -144,6 +209,19 @@ list.addEventListener("click", async (event) => {
   }
 });
 
+orderList.addEventListener("change", async (event) => {
+  const select = event.target.closest("[data-order-status]");
+  if (!select) return;
+  try {
+    await updateOrderStatus(select.dataset.orderStatus, select.value);
+    note.textContent = "Order status updated.";
+    await loadOrders();
+    renderOrders();
+  } catch (error) {
+    note.textContent = error.message;
+  }
+});
+
 resetForm.addEventListener("click", () => {
   const pin = adminPin();
   form.reset();
@@ -162,9 +240,16 @@ exportProducts.addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
+refreshOrders.addEventListener("click", async () => {
+  await loadOrders();
+  renderOrders();
+});
+
 async function initAdmin() {
   await loadProducts();
+  await loadOrders();
   render();
+  renderOrders();
 }
 
 initAdmin();
