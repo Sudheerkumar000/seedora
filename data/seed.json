@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-23T04:39:51.330Z"
+    "updatedAt": "2026-05-23T04:54:11.693Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -268,9 +268,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/afghani-green-raisins.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T04:54:11.693Z"
     },
     {
       "id": "premium-figs",
