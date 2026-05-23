@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-23T02:18:41.703Z"
+    "updatedAt": "2026-05-23T02:32:29.974Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -164,9 +164,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/extra-light-walnuts.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T02:32:29.974Z"
     },
     {
       "id": "macadamia-nuts",
