@@ -666,7 +666,7 @@ async function loadBackendCatalog() {
   } catch {
   }
   try {
-    const response = await fetch("data/seed.json?v=pistachios-photo", { cache: "no-store" });
+    const response = await fetch("data/seed.json?v=walnuts-photo", { cache: "no-store" });
     if (!response.ok) throw new Error("Seed catalog unavailable");
     const catalog = await response.json();
     products = catalog.products.filter((product) => product.active !== false);
