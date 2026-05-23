@@ -1377,16 +1377,22 @@ function initHeroRoll() {
   const heroShots = [...document.querySelectorAll(".hero-product-shot")];
   if (!heroShots.length) return;
 
+  const fanClasses = heroShots.map((_, index) => `fan-position-${index}`);
   let activeIndex = 0;
-  const showShot = () => {
+  const showCategoryFan = () => {
     heroShots.forEach((shot, index) => {
-      shot.classList.toggle("is-active", index === activeIndex);
+      const fanPosition = (index - activeIndex + heroShots.length) % heroShots.length;
+      shot.classList.remove(...fanClasses);
+      shot.classList.add(`fan-position-${fanPosition}`);
+      shot.classList.toggle("is-active", fanPosition === 0);
     });
-    activeIndex = (activeIndex + 1) % heroShots.length;
   };
 
-  showShot();
-  window.setInterval(showShot, 1000);
+  showCategoryFan();
+  window.setInterval(() => {
+    activeIndex = (activeIndex + 1) % heroShots.length;
+    showCategoryFan();
+  }, Math.round(5000 / heroShots.length));
 }
 
 async function initSeedora() {
