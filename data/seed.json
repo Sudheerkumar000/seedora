@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-23T02:32:29.974Z"
+    "updatedAt": "2026-05-23T02:51:44.452Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -242,9 +242,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/kimia-dates.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T02:51:44.452Z"
     },
     {
       "id": "green-raisins",
