@@ -312,12 +312,25 @@ h1 {
     0 24px 46px rgba(23, 33, 29, 0.2),
     0 5px 14px rgba(36, 107, 69, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
-  opacity: 0.78;
-  transform: var(--shot-transform) scale(0.96);
+  opacity: 0.7;
+  transform: var(--shot-transform) translateY(0) scale(0.94);
   transform-style: preserve-3d;
-  animation: heroImageRoll 5s ease-in-out infinite both;
+  transition:
+    opacity 520ms ease,
+    transform 520ms ease,
+    box-shadow 520ms ease;
   backdrop-filter: blur(14px);
   will-change: opacity, transform;
+}
+
+.hero-product-shot.is-active {
+  z-index: 9;
+  opacity: 1;
+  transform: var(--shot-transform) translateY(-18px) scale(1.08);
+  box-shadow:
+    0 34px 62px rgba(23, 33, 29, 0.26),
+    0 8px 18px rgba(36, 107, 69, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
 }
 
 .hero-product-shot img {
@@ -335,7 +348,6 @@ h1 {
   z-index: 4;
   width: min(49%, 278px);
   --shot-transform: rotateY(-12deg) rotateX(5deg) translateZ(72px);
-  animation-delay: 0s;
 }
 
 .hero-shot-cashew {
@@ -344,7 +356,6 @@ h1 {
   z-index: 3;
   width: min(27%, 150px);
   --shot-transform: rotateY(18deg) rotateZ(-8deg) translateZ(38px);
-  animation-delay: -4s;
 }
 
 .hero-shot-pista {
@@ -353,7 +364,6 @@ h1 {
   z-index: 3;
   width: min(28%, 156px);
   --shot-transform: rotateY(-20deg) rotateZ(7deg) translateZ(42px);
-  animation-delay: -3s;
 }
 
 .hero-shot-dates {
@@ -362,7 +372,6 @@ h1 {
   z-index: 2;
   width: min(24%, 134px);
   --shot-transform: rotateY(14deg) rotateZ(6deg) translateZ(28px);
-  animation-delay: -2s;
 }
 
 .hero-shot-spice {
@@ -371,7 +380,6 @@ h1 {
   z-index: 2;
   width: min(24%, 134px);
   --shot-transform: rotateY(-16deg) rotateZ(-5deg) translateZ(30px);
-  animation-delay: -1s;
 }
 
 .hero-product-shot::after {
@@ -639,26 +647,6 @@ h1 {
 
   50% {
     margin-top: -12px;
-  }
-}
-
-@keyframes heroImageRoll {
-  0%,
-  100% {
-    opacity: 0.72;
-    transform: var(--shot-transform) translateY(0) scale(0.94);
-  }
-
-  8%,
-  18% {
-    opacity: 1;
-    transform: var(--shot-transform) translateY(-18px) scale(1.08);
-  }
-
-  28%,
-  92% {
-    opacity: 0.78;
-    transform: var(--shot-transform) translateY(0) scale(0.96);
   }
 }
 
