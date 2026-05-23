@@ -25,7 +25,7 @@ function loadLocalEnv() {
 loadLocalEnv();
 
 const port = Number(process.env.PORT || 4173);
-const host = process.env.HOST || "127.0.0.1";
+const host = process.env.HOST || (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
 const adminPin = process.env.SEEDORA_ADMIN_PIN || "9704597062";
 const sessionTtlMs = 1000 * 60 * 60 * 24 * 14;
 const otpTtlMs = 1000 * 60 * 5;
