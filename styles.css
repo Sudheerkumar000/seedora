@@ -295,95 +295,88 @@ h1 {
 
 .hero-photo-stage {
   position: absolute;
-  inset: 7%;
+  inset: 6%;
   z-index: 2;
   transform-style: preserve-3d;
 }
 
 .hero-product-shot {
+  --shot-transform: translateZ(0);
   position: absolute;
-  display: grid;
-  gap: 8px;
   margin: 0;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.64);
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 8px;
-  background: rgba(255, 253, 247, 0.72);
+  background: rgba(255, 253, 247, 0.8);
   box-shadow:
-    0 26px 52px rgba(23, 33, 29, 0.2),
+    0 24px 46px rgba(23, 33, 29, 0.2),
+    0 5px 14px rgba(36, 107, 69, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  transform: var(--shot-transform);
   transform-style: preserve-3d;
   animation: photoFloat 7s ease-in-out infinite;
   backdrop-filter: blur(14px);
+  will-change: transform;
 }
 
 .hero-product-shot img {
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 8px;
+  border-radius: 6px;
   object-fit: cover;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
-.hero-product-shot figcaption {
-  min-height: 24px;
-  color: var(--leaf-dark);
-  font-size: 0.78rem;
-  font-weight: 950;
-  line-height: 1.1;
-  text-align: center;
-}
-
 .hero-shot-main {
-  left: 26%;
-  top: 10%;
+  left: 27%;
+  top: 8%;
   z-index: 4;
-  width: min(48%, 270px);
-  transform: rotateY(-12deg) rotateX(5deg) translateZ(64px);
+  width: min(49%, 278px);
+  --shot-transform: rotateY(-12deg) rotateX(5deg) translateZ(72px);
 }
 
 .hero-shot-cashew {
-  left: 3%;
-  top: 19%;
+  left: 5%;
+  top: 18%;
   z-index: 3;
-  width: min(32%, 170px);
-  transform: rotateY(18deg) rotateZ(-7deg) translateZ(38px);
+  width: min(27%, 150px);
+  --shot-transform: rotateY(18deg) rotateZ(-8deg) translateZ(38px);
   animation-delay: -1.4s;
 }
 
 .hero-shot-pista {
-  right: 2%;
-  top: 20%;
+  right: 4%;
+  top: 22%;
   z-index: 3;
-  width: min(34%, 180px);
-  transform: rotateY(-20deg) rotateZ(6deg) translateZ(42px);
+  width: min(28%, 156px);
+  --shot-transform: rotateY(-20deg) rotateZ(7deg) translateZ(42px);
   animation-delay: -2.2s;
 }
 
 .hero-shot-dates {
-  left: 11%;
-  bottom: 2%;
+  left: 16%;
+  bottom: 10%;
   z-index: 2;
-  width: min(30%, 160px);
-  transform: rotateY(14deg) rotateZ(5deg) translateZ(28px);
+  width: min(24%, 134px);
+  --shot-transform: rotateY(14deg) rotateZ(6deg) translateZ(28px);
   animation-delay: -3.1s;
 }
 
 .hero-shot-spice {
-  right: 12%;
-  bottom: 4%;
+  right: 13%;
+  bottom: 9%;
   z-index: 2;
-  width: min(30%, 158px);
-  transform: rotateY(-16deg) rotateZ(-5deg) translateZ(30px);
+  width: min(24%, 134px);
+  --shot-transform: rotateY(-16deg) rotateZ(-5deg) translateZ(30px);
   animation-delay: -4s;
 }
 
 .hero-product-shot::after {
   position: absolute;
-  inset: 8px;
+  inset: 6px;
   content: "";
-  border-radius: 8px;
+  border-radius: 6px;
   background: linear-gradient(120deg, rgba(255, 255, 255, 0.28), transparent 42%);
   pointer-events: none;
 }
@@ -650,11 +643,11 @@ h1 {
 @keyframes photoFloat {
   0%,
   100% {
-    margin-top: 0;
+    transform: var(--shot-transform) translateY(0);
   }
 
   50% {
-    margin-top: -12px;
+    transform: var(--shot-transform) translateY(-12px);
   }
 }
 
@@ -2791,25 +2784,20 @@ h1 {
   }
 
   .hero-product-shot {
-    padding: 8px;
-  }
-
-  .hero-product-shot figcaption {
-    min-height: 20px;
-    font-size: 0.68rem;
+    padding: 6px;
   }
 
   .hero-shot-main {
-    left: 28%;
+    left: 29%;
     top: 12%;
-    width: min(46%, 176px);
+    width: min(48%, 188px);
   }
 
   .hero-shot-cashew,
   .hero-shot-pista,
   .hero-shot-dates,
   .hero-shot-spice {
-    width: min(30%, 118px);
+    width: min(28%, 112px);
   }
 
   .hero-shot-cashew {
