@@ -293,6 +293,101 @@ h1 {
   transform: rotateX(58deg) rotateZ(-1deg);
 }
 
+.hero-photo-stage {
+  position: absolute;
+  inset: 7%;
+  z-index: 2;
+  transform-style: preserve-3d;
+}
+
+.hero-product-shot {
+  position: absolute;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.72);
+  box-shadow:
+    0 26px 52px rgba(23, 33, 29, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  transform-style: preserve-3d;
+  animation: photoFloat 7s ease-in-out infinite;
+  backdrop-filter: blur(14px);
+}
+
+.hero-product-shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.hero-product-shot figcaption {
+  min-height: 24px;
+  color: var(--leaf-dark);
+  font-size: 0.78rem;
+  font-weight: 950;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.hero-shot-main {
+  left: 26%;
+  top: 10%;
+  z-index: 4;
+  width: min(48%, 270px);
+  transform: rotateY(-12deg) rotateX(5deg) translateZ(64px);
+}
+
+.hero-shot-cashew {
+  left: 3%;
+  top: 19%;
+  z-index: 3;
+  width: min(32%, 170px);
+  transform: rotateY(18deg) rotateZ(-7deg) translateZ(38px);
+  animation-delay: -1.4s;
+}
+
+.hero-shot-pista {
+  right: 2%;
+  top: 20%;
+  z-index: 3;
+  width: min(34%, 180px);
+  transform: rotateY(-20deg) rotateZ(6deg) translateZ(42px);
+  animation-delay: -2.2s;
+}
+
+.hero-shot-dates {
+  left: 11%;
+  bottom: 2%;
+  z-index: 2;
+  width: min(30%, 160px);
+  transform: rotateY(14deg) rotateZ(5deg) translateZ(28px);
+  animation-delay: -3.1s;
+}
+
+.hero-shot-spice {
+  right: 12%;
+  bottom: 4%;
+  z-index: 2;
+  width: min(30%, 158px);
+  transform: rotateY(-16deg) rotateZ(-5deg) translateZ(30px);
+  animation-delay: -4s;
+}
+
+.hero-product-shot::after {
+  position: absolute;
+  inset: 8px;
+  content: "";
+  border-radius: 8px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.28), transparent 42%);
+  pointer-events: none;
+}
+
 .bowl {
   position: absolute;
   left: 8%;
@@ -542,6 +637,17 @@ h1 {
 }
 
 @keyframes heroFloat {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+
+  50% {
+    margin-top: -12px;
+  }
+}
+
+@keyframes photoFloat {
   0%,
   100% {
     margin-top: 0;
@@ -2678,6 +2784,52 @@ h1 {
 
   .hero-visual {
     min-height: 360px;
+  }
+
+  .hero-photo-stage {
+    inset: 6%;
+  }
+
+  .hero-product-shot {
+    padding: 8px;
+  }
+
+  .hero-product-shot figcaption {
+    min-height: 20px;
+    font-size: 0.68rem;
+  }
+
+  .hero-shot-main {
+    left: 28%;
+    top: 12%;
+    width: min(46%, 176px);
+  }
+
+  .hero-shot-cashew,
+  .hero-shot-pista,
+  .hero-shot-dates,
+  .hero-shot-spice {
+    width: min(30%, 118px);
+  }
+
+  .hero-shot-cashew {
+    left: 2%;
+    top: 22%;
+  }
+
+  .hero-shot-pista {
+    right: 1%;
+    top: 24%;
+  }
+
+  .hero-shot-dates {
+    left: 10%;
+    bottom: 8%;
+  }
+
+  .hero-shot-spice {
+    right: 9%;
+    bottom: 8%;
   }
 
   .bowl {
