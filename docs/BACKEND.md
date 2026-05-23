@@ -53,6 +53,18 @@ Default local admin PIN:
 9704597062
 ```
 
+## Render Deployment
+
+Seedora has `render.yaml` for deployment as one Node web service. Configure these Render environment variables:
+
+```text
+NODE_ENV=production
+DATABASE_URL=your-supabase-transaction-pooler-url
+SEEDORA_ADMIN_PIN=your-private-admin-pin
+```
+
+Render provides `PORT` automatically. In production the server binds to `0.0.0.0`; locally it still defaults to `127.0.0.1`.
+
 ## Data Storage
 
 Local development without PostgreSQL uses:
