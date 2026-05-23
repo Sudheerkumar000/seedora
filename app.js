@@ -591,6 +591,7 @@ const otpRequestForm = document.querySelector("#otpRequestForm");
 const otpVerifyForm = document.querySelector("#otpVerifyForm");
 const authNote = document.querySelector("#authNote");
 const accountCard = document.querySelector("#accountCard");
+const guestModeButton = document.querySelector("#guestModeButton");
 let pendingOtpProfile = JSON.parse(localStorage.getItem("seedoraPendingOtpProfile") || "null");
 let customerSession = JSON.parse(localStorage.getItem("seedoraCustomerSession") || "null");
 
@@ -1181,6 +1182,11 @@ cartButton.addEventListener("click", () => openDrawer(cartDrawer));
 accountButton.addEventListener("click", () => {
   renderAccount();
   openDrawer(authDrawer);
+});
+guestModeButton.addEventListener("click", () => {
+  closeDrawers();
+  document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+  showToast("Guest mode is active. You can browse and checkout without login.");
 });
 wishlistButton.addEventListener("click", () => {
   activeQuickFilter = "wishlist";
