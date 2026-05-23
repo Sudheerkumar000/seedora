@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-22T23:25:40.418Z"
+    "updatedAt": "2026-05-23T00:42:53.110Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -86,9 +86,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/california-almonds.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T00:42:53.110Z"
     },
     {
       "id": "cashew-w320",
