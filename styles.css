@@ -312,11 +312,12 @@ h1 {
     0 24px 46px rgba(23, 33, 29, 0.2),
     0 5px 14px rgba(36, 107, 69, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
-  transform: var(--shot-transform);
+  opacity: 0.78;
+  transform: var(--shot-transform) scale(0.96);
   transform-style: preserve-3d;
-  animation: photoFloat 7s ease-in-out infinite;
+  animation: heroImageRoll 5s ease-in-out infinite both;
   backdrop-filter: blur(14px);
-  will-change: transform;
+  will-change: opacity, transform;
 }
 
 .hero-product-shot img {
@@ -334,6 +335,7 @@ h1 {
   z-index: 4;
   width: min(49%, 278px);
   --shot-transform: rotateY(-12deg) rotateX(5deg) translateZ(72px);
+  animation-delay: 0s;
 }
 
 .hero-shot-cashew {
@@ -342,7 +344,7 @@ h1 {
   z-index: 3;
   width: min(27%, 150px);
   --shot-transform: rotateY(18deg) rotateZ(-8deg) translateZ(38px);
-  animation-delay: -1.4s;
+  animation-delay: -4s;
 }
 
 .hero-shot-pista {
@@ -351,7 +353,7 @@ h1 {
   z-index: 3;
   width: min(28%, 156px);
   --shot-transform: rotateY(-20deg) rotateZ(7deg) translateZ(42px);
-  animation-delay: -2.2s;
+  animation-delay: -3s;
 }
 
 .hero-shot-dates {
@@ -360,7 +362,7 @@ h1 {
   z-index: 2;
   width: min(24%, 134px);
   --shot-transform: rotateY(14deg) rotateZ(6deg) translateZ(28px);
-  animation-delay: -3.1s;
+  animation-delay: -2s;
 }
 
 .hero-shot-spice {
@@ -369,7 +371,7 @@ h1 {
   z-index: 2;
   width: min(24%, 134px);
   --shot-transform: rotateY(-16deg) rotateZ(-5deg) translateZ(30px);
-  animation-delay: -4s;
+  animation-delay: -1s;
 }
 
 .hero-product-shot::after {
@@ -640,14 +642,23 @@ h1 {
   }
 }
 
-@keyframes photoFloat {
+@keyframes heroImageRoll {
   0%,
   100% {
-    transform: var(--shot-transform) translateY(0);
+    opacity: 0.72;
+    transform: var(--shot-transform) translateY(0) scale(0.94);
   }
 
-  50% {
-    transform: var(--shot-transform) translateY(-12px);
+  8%,
+  18% {
+    opacity: 1;
+    transform: var(--shot-transform) translateY(-18px) scale(1.08);
+  }
+
+  28%,
+  92% {
+    opacity: 0.78;
+    transform: var(--shot-transform) translateY(0) scale(0.96);
   }
 }
 
