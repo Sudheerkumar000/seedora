@@ -76,3 +76,22 @@ When `DATABASE_URL` is present, Seedora stores the live business state in Postgr
 - Deploy the backend with `DATABASE_URL` configured on Render/Railway
 - Add delivery-rate rules by pincode
 - Add authentication for the admin page before launch
+
+## Deploy On Render
+
+Seedora includes `render.yaml` for a one-service deployment. The Render app serves the storefront, admin page, backend APIs, and Supabase PostgreSQL storage from one URL.
+
+In Render, connect the GitHub repository and add these environment variables:
+
+```text
+NODE_ENV=production
+DATABASE_URL=your-supabase-transaction-pooler-url
+SEEDORA_ADMIN_PIN=your-private-admin-pin
+```
+
+After deployment, open:
+
+```text
+https://your-render-app.onrender.com/
+https://your-render-app.onrender.com/admin.html
+```
