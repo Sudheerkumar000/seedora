@@ -264,7 +264,12 @@
       </button>
       <div class="cart-head">
         <p class="eyebrow">Seedora account</p>
-        <h2>Login with OTP</h2>
+        <h2>Login or continue as guest</h2>
+      </div>
+      <div class="guest-card">
+        <strong>Shopping without signup?</strong>
+        <span>Browse products and place an order as a guest. Login is optional for saved details and faster repeat orders.</span>
+        <button class="secondary-action" id="guestModeButton" type="button">Continue as guest</button>
       </div>
       <form class="checkout" id="otpRequestForm">
         <label>
@@ -365,12 +370,13 @@
           <label><input type="radio" name="payment" value="Wallets" /> Wallets</label>
           <label><input type="radio" name="payment" value="Cash on delivery" /> Cash on delivery</label>
         </div>
+        <p class="guest-checkout-note">Guest checkout is available. Login is optional.</p>
         <button class="primary-action" type="submit">Place order</button>
       </form>
       <div class="order-receipt" id="orderReceipt" hidden></div>
       <p class="order-note" id="orderNote" role="status"></p>
     </aside>
 
-    <script src="app.js?v=seedora-3d-hero"></script>
+    <script src="app.js?v=seedora-guest-mode"></script>
   </body>
 </html>
