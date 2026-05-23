@@ -3,7 +3,7 @@
     "name": "Seedora",
     "version": 1,
     "createdAt": "2026-05-22T11:04:29.310Z",
-    "updatedAt": "2026-05-23T04:54:11.693Z"
+    "updatedAt": "2026-05-23T08:48:16.338Z"
   },
   "settings": {
     "phone": "+91 9704597062",
@@ -294,9 +294,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/premium-dried-figs.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:14:36.069Z"
     },
     {
       "id": "whole-cranberries",
@@ -320,9 +320,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/whole-cranberries.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:14:36.069Z"
     },
     {
       "id": "pumpkin-seeds",
@@ -346,9 +346,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/pumpkin-seeds.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:14:36.069Z"
     },
     {
       "id": "chia-seeds",
@@ -372,9 +372,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/black-chia-seeds.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:14:36.069Z"
     },
     {
       "id": "flax-seeds",
@@ -398,9 +398,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/premium-flax-seeds.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:14:36.069Z"
     },
     {
       "id": "trail-mix",
@@ -424,9 +424,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/berry-trail-mix.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:14:36.069Z"
     },
     {
       "id": "date-bites",
@@ -450,9 +450,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/dark-choco-date-bites.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:27:59.327Z"
     },
     {
       "id": "panchmeva-mix",
@@ -476,9 +476,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/panchmeva-nut-mix.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:27:59.327Z"
     },
     {
       "id": "gift-box",
@@ -502,9 +502,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/seedora-signature-gift-box.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:27:59.327Z"
     },
     {
       "id": "wedding-hamper",
@@ -528,9 +528,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/celebration-hamper.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:27:59.327Z"
     },
     {
       "id": "classic-dry-fruit-laddu",
@@ -554,9 +554,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/classic-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:27:59.327Z"
     },
     {
       "id": "anjeer-dry-fruit-laddu",
@@ -580,9 +580,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/anjeer-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:27:59.327Z"
     },
     {
       "id": "sugar-free-dry-fruit-laddu",
@@ -606,9 +606,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/sugar-free-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:37:38.525Z"
     },
     {
       "id": "dates-dry-fruit-laddu",
@@ -632,9 +632,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/dates-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:37:38.525Z"
     },
     {
       "id": "choco-dates-dry-fruit-laddu",
@@ -658,9 +658,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/choco-dates-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:37:38.525Z"
     },
     {
       "id": "andhra-style-dry-fruit-laddu",
@@ -684,9 +684,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/andhra-style-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:37:38.525Z"
     },
     {
       "id": "honey-dry-fruit-laddu",
@@ -710,9 +710,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/honey-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:47:26.851Z"
     },
     {
       "id": "handmade-premium-dry-fruit-laddu",
@@ -736,9 +736,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/handmade-premium-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:47:26.851Z"
     },
     {
       "id": "no-refined-sugar-laddoo",
@@ -762,9 +762,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/no-refined-sugar-dry-fruit-laddoo.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:47:26.851Z"
     },
     {
       "id": "rose-dry-fruit-laddu",
@@ -788,9 +788,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/rose-dry-fruit-laddu.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T05:47:26.851Z"
     },
     {
       "id": "natural-turmeric-powder",
@@ -814,9 +814,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/natural-turmeric-powder.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:14:13.899Z"
     },
     {
       "id": "red-mirchi-powder",
@@ -840,9 +840,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/red-mirchi-powder.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:14:13.899Z"
     },
     {
       "id": "coriander-powder",
@@ -866,9 +866,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/coriander-powder.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:14:13.899Z"
     },
     {
       "id": "whole-cumin-seeds",
@@ -892,9 +892,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/whole-cumin-seeds.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:14:13.899Z"
     },
     {
       "id": "cumin-powder",
@@ -918,9 +918,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/cumin-powder.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:14:13.899Z"
     },
     {
       "id": "garam-masala",
@@ -944,9 +944,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/garam-masala.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:14:13.899Z"
     },
     {
       "id": "mustard-seeds",
@@ -970,9 +970,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/mustard-seeds.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:35:31.491Z"
     },
     {
       "id": "black-pepper-powder",
@@ -996,9 +996,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/black-pepper-powder.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:35:31.491Z"
     },
     {
       "id": "kashmiri-chilli-powder",
@@ -1022,9 +1022,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/kashmiri-chilli-powder.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:35:31.491Z"
     },
     {
       "id": "sambar-masala",
@@ -1048,9 +1048,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/sambar-masala.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:35:31.491Z"
     },
     {
       "id": "chaat-masala",
@@ -1074,9 +1074,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/chaat-masala.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:35:31.491Z"
     },
     {
       "id": "kasuri-methi",
@@ -1100,9 +1100,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/kasuri-methi.png",
       "createdAt": "2026-05-22T11:04:29.315Z",
-      "updatedAt": "2026-05-22T11:04:29.315Z"
+      "updatedAt": "2026-05-23T07:35:31.491Z"
     },
     {
       "id": "premium-makhana",
@@ -1126,9 +1126,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/premium-makhana.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:00:37.022Z"
     },
     {
       "id": "chilgoza-pine-nuts",
@@ -1152,9 +1152,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/chilgoza-pine-nuts.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:00:37.022Z"
     },
     {
       "id": "dry-coconut-slices",
@@ -1178,9 +1178,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/dry-coconut-slices.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:00:37.022Z"
     },
     {
       "id": "mixed-dry-berries",
@@ -1204,9 +1204,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/mixed-dry-berries.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:00:37.022Z"
     },
     {
       "id": "dried-prunes",
@@ -1230,9 +1230,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/dried-prunes.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:00:37.022Z"
     },
     {
       "id": "hazelnuts",
@@ -1256,9 +1256,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/hazelnuts.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:00:37.022Z"
     },
     {
       "id": "pecans",
@@ -1282,9 +1282,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/pecans.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "sunflower-seeds",
@@ -1308,9 +1308,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/sunflower-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "sesame-seeds",
@@ -1334,9 +1334,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/sesame-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "watermelon-seeds",
@@ -1360,9 +1360,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/watermelon-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "sabja-basil-seeds",
@@ -1386,9 +1386,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/sabja-basil-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "hemp-seeds",
@@ -1412,9 +1412,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/hemp-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "fenugreek-seeds",
@@ -1438,9 +1438,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/fenugreek-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "poppy-seeds",
@@ -1464,9 +1464,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/poppy-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "fennel-seeds",
@@ -1490,9 +1490,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/fennel-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "coriander-seeds",
@@ -1516,9 +1516,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/coriander-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     },
     {
       "id": "nigella-seeds",
@@ -1542,9 +1542,9 @@
       ],
       "stock": 100,
       "active": true,
-      "image": "",
+      "image": "assets/products/nigella-seeds.png",
       "createdAt": "2026-05-22T23:25:40.418Z",
-      "updatedAt": "2026-05-22T23:25:40.418Z"
+      "updatedAt": "2026-05-23T08:48:16.338Z"
     }
   ],
   "customers": [],
