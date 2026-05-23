@@ -295,7 +295,7 @@ h1 {
 
 .hero-photo-stage {
   position: absolute;
-  inset: 6%;
+  inset: 5%;
   z-index: 2;
   transform-style: preserve-3d;
 }
@@ -303,6 +303,8 @@ h1 {
 .hero-product-shot {
   --shot-transform: translateZ(0);
   position: absolute;
+  left: 50%;
+  top: 50%;
   margin: 0;
   padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.7);
@@ -313,12 +315,12 @@ h1 {
     0 5px 14px rgba(36, 107, 69, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.78);
   opacity: 0.7;
-  transform: var(--shot-transform) translateY(0) scale(0.94);
+  transform: translate(-50%, -50%) var(--shot-transform) scale(0.94);
   transform-style: preserve-3d;
   transition:
-    opacity 520ms ease,
-    transform 520ms ease,
-    box-shadow 520ms ease;
+    opacity 360ms ease,
+    transform 360ms ease,
+    box-shadow 360ms ease;
   backdrop-filter: blur(14px);
   will-change: opacity, transform;
 }
@@ -326,7 +328,7 @@ h1 {
 .hero-product-shot.is-active {
   z-index: 9;
   opacity: 1;
-  transform: var(--shot-transform) translateY(-18px) scale(1.08);
+  transform: translate(-50%, -50%) var(--shot-transform) scale(1.02);
   box-shadow:
     0 34px 62px rgba(23, 33, 29, 0.26),
     0 8px 18px rgba(36, 107, 69, 0.16),
@@ -342,44 +344,46 @@ h1 {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
-.hero-shot-main {
-  left: 27%;
-  top: 8%;
+.fan-position-0 {
+  z-index: 8;
+  width: min(43%, 238px);
+  --shot-transform: translate3d(0, -14px, 92px) rotateY(-5deg) rotateX(4deg);
+}
+
+.fan-position-1 {
+  z-index: 7;
+  width: min(28%, 152px);
+  --shot-transform: translate3d(80px, -52px, 54px) rotateZ(14deg) rotateY(-18deg);
+}
+
+.fan-position-2 {
+  z-index: 6;
+  width: min(24%, 130px);
+  --shot-transform: translate3d(118px, 28px, 30px) rotateZ(27deg) rotateY(-22deg);
+}
+
+.fan-position-3 {
+  z-index: 5;
+  width: min(23%, 122px);
+  --shot-transform: translate3d(50px, 92px, 14px) rotateZ(38deg) rotateY(-10deg);
+}
+
+.fan-position-4 {
   z-index: 4;
-  width: min(49%, 278px);
-  --shot-transform: rotateY(-12deg) rotateX(5deg) translateZ(72px);
+  width: min(23%, 122px);
+  --shot-transform: translate3d(-50px, 92px, 14px) rotateZ(-38deg) rotateY(10deg);
 }
 
-.hero-shot-cashew {
-  left: 5%;
-  top: 18%;
-  z-index: 3;
-  width: min(27%, 150px);
-  --shot-transform: rotateY(18deg) rotateZ(-8deg) translateZ(38px);
+.fan-position-5 {
+  z-index: 5;
+  width: min(24%, 130px);
+  --shot-transform: translate3d(-118px, 28px, 30px) rotateZ(-27deg) rotateY(22deg);
 }
 
-.hero-shot-pista {
-  right: 4%;
-  top: 22%;
-  z-index: 3;
-  width: min(28%, 156px);
-  --shot-transform: rotateY(-20deg) rotateZ(7deg) translateZ(42px);
-}
-
-.hero-shot-dates {
-  left: 16%;
-  bottom: 10%;
-  z-index: 2;
-  width: min(24%, 134px);
-  --shot-transform: rotateY(14deg) rotateZ(6deg) translateZ(28px);
-}
-
-.hero-shot-spice {
-  right: 13%;
-  bottom: 9%;
-  z-index: 2;
-  width: min(24%, 134px);
-  --shot-transform: rotateY(-16deg) rotateZ(-5deg) translateZ(30px);
+.fan-position-6 {
+  z-index: 6;
+  width: min(28%, 152px);
+  --shot-transform: translate3d(-80px, -52px, 54px) rotateZ(-14deg) rotateY(18deg);
 }
 
 .hero-product-shot::after {
@@ -2786,37 +2790,39 @@ h1 {
     padding: 6px;
   }
 
-  .hero-shot-main {
-    left: 29%;
-    top: 12%;
-    width: min(48%, 188px);
+  .fan-position-0 {
+    width: min(43%, 164px);
+    --shot-transform: translate3d(0, -8px, 82px) rotateY(-5deg) rotateX(4deg);
   }
 
-  .hero-shot-cashew,
-  .hero-shot-pista,
-  .hero-shot-dates,
-  .hero-shot-spice {
-    width: min(28%, 112px);
+  .fan-position-1 {
+    width: min(27%, 102px);
+    --shot-transform: translate3d(58px, -38px, 52px) rotateZ(14deg) rotateY(-18deg);
   }
 
-  .hero-shot-cashew {
-    left: 2%;
-    top: 22%;
+  .fan-position-2 {
+    width: min(24%, 90px);
+    --shot-transform: translate3d(78px, 24px, 28px) rotateZ(27deg) rotateY(-22deg);
   }
 
-  .hero-shot-pista {
-    right: 1%;
-    top: 24%;
+  .fan-position-3 {
+    width: min(22%, 84px);
+    --shot-transform: translate3d(34px, 72px, 14px) rotateZ(38deg) rotateY(-10deg);
   }
 
-  .hero-shot-dates {
-    left: 10%;
-    bottom: 8%;
+  .fan-position-4 {
+    width: min(22%, 84px);
+    --shot-transform: translate3d(-34px, 72px, 14px) rotateZ(-38deg) rotateY(10deg);
   }
 
-  .hero-shot-spice {
-    right: 9%;
-    bottom: 8%;
+  .fan-position-5 {
+    width: min(24%, 90px);
+    --shot-transform: translate3d(-78px, 24px, 28px) rotateZ(-27deg) rotateY(22deg);
+  }
+
+  .fan-position-6 {
+    width: min(27%, 102px);
+    --shot-transform: translate3d(-58px, -38px, 52px) rotateZ(-14deg) rotateY(18deg);
   }
 
   .bowl {
