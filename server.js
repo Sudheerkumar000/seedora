@@ -6,11 +6,33 @@ const crypto = require("node:crypto");
 const root = __dirname;
 const dbPath = path.join(root, "data", "db.json");
 const seedPath = path.join(root, "data", "seed.json");
+
+function loadLocalEnv() {
+  const envPath = path.join(root, ".env");
+  if (!fs.existsSync(envPath)) return;
+  const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) return;
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex === -1) return;
+    const key = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim().replace(/^["']|["']$/g, "");
+    process.env[key] ||= value;
+  });
+}
+
+loadLocalEnv();
+
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || "127.0.0.1";
 const adminPin = process.env.SEEDORA_ADMIN_PIN || "9704597062";
 const sessionTtlMs = 1000 * 60 * 60 * 24 * 14;
 const otpTtlMs = 1000 * 60 * 5;
+const postgresEnabled = Boolean(process.env.DATABASE_URL);
+const postgresStateId = "seedora-main";
+let pgPool;
+let pgSchemaReady = false;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -24,16 +46,73 @@ const mimeTypes = {
   ".ico": "image/x-icon",
 };
 
-function readDb() {
+function getPgPool() {
+  if (!postgresEnabled) return null;
+  if (pgPool) return pgPool;
+  let Pool;
+  try {
+    ({ Pool } = require("pg"));
+  } catch {
+    throw new Error("PostgreSQL support needs the pg package. Run npm install before using DATABASE_URL.");
+  }
+  pgPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+    ssl: { rejectUnauthorized: false },
+  });
+  return pgPool;
+}
+
+async function ensurePgSchema() {
+  const pool = getPgPool();
+  if (!pool || pgSchemaReady) return;
+  await pool.query(`
+    create table if not exists seedora_app_state (
+      id text primary key,
+      data jsonb not null,
+      updated_at timestamptz not null default now()
+    )
+  `);
+  pgSchemaReady = true;
+}
+
+function readSeedDb() {
+  return JSON.parse(fs.readFileSync(seedPath, "utf8"));
+}
+
+async function readDb() {
+  if (postgresEnabled) {
+    await ensurePgSchema();
+    const pool = getPgPool();
+    const result = await pool.query("select data from seedora_app_state where id = $1", [postgresStateId]);
+    if (result.rows[0]) return result.rows[0].data;
+    const seedDb = fs.existsSync(dbPath) ? JSON.parse(fs.readFileSync(dbPath, "utf8")) : readSeedDb();
+    await writeDb(seedDb);
+    return seedDb;
+  }
   if (!fs.existsSync(dbPath)) {
     fs.copyFileSync(seedPath, dbPath);
   }
   return JSON.parse(fs.readFileSync(dbPath, "utf8"));
 }
 
-function writeDb(db) {
+async function writeDb(db) {
   ensureCollections(db);
   db.meta.updatedAt = new Date().toISOString();
+  if (postgresEnabled) {
+    await ensurePgSchema();
+    const pool = getPgPool();
+    await pool.query(
+      `
+        insert into seedora_app_state (id, data, updated_at)
+        values ($1, $2::jsonb, now())
+        on conflict (id)
+        do update set data = excluded.data, updated_at = now()
+      `,
+      [postgresStateId, JSON.stringify(db)]
+    );
+    return;
+  }
   fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
 }
 
@@ -306,7 +385,7 @@ function orderRows(db) {
 }
 
 async function handleApi(req, res, url) {
-  const db = readDb();
+  const db = await readDb();
 
   if (req.method === "GET" && url.pathname === "/api/health") {
     json(res, 200, { ok: true, app: "Seedora", time: new Date().toISOString() });
@@ -331,7 +410,7 @@ async function handleApi(req, res, url) {
     db.products.push(product);
     upsertCategory(db, product.category);
     audit(db, "product.created", { productId: product.id, name: product.name });
-    writeDb(db);
+    await writeDb(db);
     json(res, 201, { product: publicProduct(product) });
     return;
   }
@@ -348,7 +427,7 @@ async function handleApi(req, res, url) {
       db.products[index].active = false;
       db.products[index].updatedAt = new Date().toISOString();
       audit(db, "product.deleted", { productId: id });
-      writeDb(db);
+      await writeDb(db);
       json(res, 200, { ok: true });
       return;
     }
@@ -370,7 +449,7 @@ async function handleApi(req, res, url) {
       });
     }
     audit(db, "product.updated", { productId: id });
-    writeDb(db);
+    await writeDb(db);
     json(res, 200, { product: publicProduct(db.products[index]) });
     return;
   }
@@ -397,7 +476,7 @@ async function handleApi(req, res, url) {
     notify(db, "sms", mobile, "otp", { otp: process.env.NODE_ENV === "production" ? undefined : otp });
     if (email) notify(db, "email", email, "otp", {});
     audit(db, "otp.requested", { mobile });
-    writeDb(db);
+    await writeDb(db);
     json(res, 200, { ok: true, message: "OTP queued", devOtp: process.env.NODE_ENV === "production" ? undefined : otp });
     return;
   }
@@ -432,7 +511,7 @@ async function handleApi(req, res, url) {
     customer.sessionExpiresAt = new Date(Date.now() + sessionTtlMs).toISOString();
     customer.updatedAt = new Date().toISOString();
     audit(db, "customer.login", { customerId: customer.id });
-    writeDb(db);
+    await writeDb(db);
     json(res, 200, { token, customer: { id: customer.id, name: customer.name, mobile: customer.mobile, email: customer.email } });
     return;
   }
@@ -494,7 +573,7 @@ async function handleApi(req, res, url) {
     notify(db, "sms", customer.mobile, "order_placed", { orderId: order.id, total: order.total });
     if (customer.email) notify(db, "email", customer.email, "order_placed", { orderId: order.id });
     audit(db, "order.created", { orderId: order.id, customerId: customer.id });
-    writeDb(db);
+    await writeDb(db);
     json(res, 201, { order });
     return;
   }
@@ -609,7 +688,7 @@ async function handleApi(req, res, url) {
       status: order.status,
     });
     audit(db, "order.status_updated", { orderId: order.id, status: order.status });
-    writeDb(db);
+    await writeDb(db);
     json(res, 200, { order });
     return;
   }
@@ -629,7 +708,7 @@ async function handleApi(req, res, url) {
       paymentStatus: order.paymentStatus,
     });
     audit(db, "payment.status_updated", { orderId: order.id, paymentStatus: order.paymentStatus });
-    writeDb(db);
+    await writeDb(db);
     json(res, 200, { order, payment });
     return;
   }
