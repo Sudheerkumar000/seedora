@@ -1,6 +1,9 @@
 # Seedora Backend Plan
 
-Seedora now has a local backend in `server.js` and persistent business data in `data/db.json`.
+Seedora now has a backend in `server.js` with two storage modes:
+
+- PostgreSQL/Supabase when `DATABASE_URL` is configured
+- Local JSON fallback in `data/db.json` when `DATABASE_URL` is not configured
 
 ## Current Local Backend
 
@@ -52,10 +55,22 @@ Default local admin PIN:
 
 ## Data Storage
 
-Local development uses:
+Local development without PostgreSQL uses:
 
 ```text
 data/db.json
+```
+
+Production-style Supabase/PostgreSQL storage uses:
+
+```text
+DATABASE_URL=postgresql://...
+```
+
+When enabled, Seedora stores the full business state in PostgreSQL table:
+
+```text
+seedora_app_state
 ```
 
 It stores:
@@ -82,7 +97,7 @@ It stores:
 
 Payment simulation supports `payment_pending`, `paid`, `failed`, `refunded`, and `cod_pending`. A paid status creates a local gateway-style payment ID. A refunded status marks the order as refunded and restores reserved stock one time.
 
-For production, move this to PostgreSQL.
+The current PostgreSQL implementation stores this data as a JSONB app-state record for fast launch. The normalized table list below is the next scale-up step when Seedora needs reporting, analytics, and multi-admin workflows.
 
 ## Production Database Tables
 
