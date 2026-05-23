@@ -59,12 +59,20 @@ Default local admin PIN:
 9704597062
 ```
 
-Local seed data is stored in `data/seed.json`. Live local data is stored in `data/db.json`, which is ignored by git so customer/order data is not pushed to GitHub.
+Local seed data is stored in `data/seed.json`. If `DATABASE_URL` is not set, live local data is stored in `data/db.json`, which is ignored by git so customer/order data is not pushed to GitHub.
+
+For Supabase/PostgreSQL storage, create a local `.env` file:
+
+```text
+DATABASE_URL=postgresql://...
+```
+
+When `DATABASE_URL` is present, Seedora stores the live business state in PostgreSQL in the `seedora_app_state` table. Keep `.env` private and never push it to GitHub.
 
 ## Next Production Steps
 
 - Replace illustrated placeholders with real product photos
 - Connect checkout to Razorpay/Cashfree or another Indian payment gateway
-- Connect orders and products to a real backend database
+- Deploy the backend with `DATABASE_URL` configured on Render/Railway
 - Add delivery-rate rules by pincode
 - Add authentication for the admin page before launch
