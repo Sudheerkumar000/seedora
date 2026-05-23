@@ -1373,7 +1373,24 @@ checkoutForm.addEventListener("submit", async (event) => {
   renderCart();
 });
 
+function initHeroRoll() {
+  const heroShots = [...document.querySelectorAll(".hero-product-shot")];
+  if (!heroShots.length) return;
+
+  let activeIndex = 0;
+  const showShot = () => {
+    heroShots.forEach((shot, index) => {
+      shot.classList.toggle("is-active", index === activeIndex);
+    });
+    activeIndex = (activeIndex + 1) % heroShots.length;
+  };
+
+  showShot();
+  window.setInterval(showShot, 1000);
+}
+
 async function initSeedora() {
+  initHeroRoll();
   await loadBackendCatalog();
   renderAccount();
   renderCategories();
