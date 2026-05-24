@@ -1,6 +1,12 @@
 const form = document.querySelector("#productForm");
 const list = document.querySelector("#adminProductList");
 const note = document.querySelector("#adminNote");
+const loginPanel = document.querySelector("#adminLoginPanel");
+const loginForm = document.querySelector("#adminLoginForm");
+const loginNote = document.querySelector("#adminLoginNote");
+const logoutButton = document.querySelector("#adminLogout");
+const adminSummary = document.querySelector("#adminSummary");
+const adminLayout = document.querySelector(".admin-layout");
 const resetForm = document.querySelector("#resetForm");
 const exportProducts = document.querySelector("#exportProducts");
 const exportProductsCsv = document.querySelector("#exportProductsCsv");
@@ -29,6 +35,7 @@ let addressCache = [];
 let paymentCache = [];
 let summaryCache = {};
 let inventoryCache = { lowStock: [], movements: [] };
+let adminSession = JSON.parse(localStorage.getItem("seedoraAdminSession") || "null");
 
 function currency(value) {
   return `Rs. ${Number(value || 0).toLocaleString("en-IN")}`;
@@ -42,8 +49,43 @@ function slug(value) {
     .replace(/(^-|-$)/g, "");
 }
 
-function adminPin() {
-  return form.elements.adminPin.value.trim();
+function adminToken() {
+  return adminSession?.token || "";
+}
+
+function hasAdminSession() {
+  return Boolean(adminSession?.token && new Date(adminSession.expiresAt).getTime() > Date.now());
+}
+
+function setAdminSession(session) {
+  adminSession = session;
+  if (session) {
+    localStorage.setItem("seedoraAdminSession", JSON.stringify(session));
+  } else {
+    localStorage.removeItem("seedoraAdminSession");
+  }
+  renderAdminAccess();
+}
+
+function adminHeaders(extra = {}) {
+  return { ...extra, "x-admin-token": adminToken() };
+}
+
+function renderAdminAccess() {
+  const unlocked = hasAdminSession();
+  loginPanel.hidden = unlocked;
+  logoutButton.hidden = !unlocked;
+  adminSummary.hidden = !unlocked;
+  adminLayout.hidden = !unlocked;
+  orderDetailPanel.hidden = true;
+  if (!unlocked) {
+    summaryCache = {};
+    orderCache = [];
+    customerCache = [];
+    addressCache = [];
+    paymentCache = [];
+    inventoryCache = { lowStock: [], movements: [] };
+  }
 }
 
 async function loadProducts() {
@@ -57,13 +99,13 @@ async function loadProducts() {
 }
 
 async function loadOrders() {
-  if (!adminPin()) {
-    orderList.innerHTML = `<div class="empty-results"><strong>Enter admin PIN.</strong><span>Orders are protected.</span></div>`;
+  if (!hasAdminSession()) {
+    orderList.innerHTML = `<div class="empty-results"><strong>Unlock admin.</strong><span>Orders are protected.</span></div>`;
     return;
   }
   try {
     const response = await fetch("/api/admin/orders", {
-      headers: { "x-admin-pin": adminPin() },
+      headers: adminHeaders(),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Could not load orders");
@@ -72,15 +114,15 @@ async function loadOrders() {
     addressCache = data.addresses || [];
     paymentCache = data.payments || [];
   } catch (error) {
-    orderList.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Check the admin PIN and backend server.</span></div>`;
+    orderList.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Unlock again and try once more.</span></div>`;
   }
 }
 
 async function loadSummary() {
-  if (!adminPin()) return;
+  if (!hasAdminSession()) return;
   try {
     const response = await fetch("/api/admin/summary", {
-      headers: { "x-admin-pin": adminPin() },
+      headers: adminHeaders(),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Could not load summary");
@@ -91,20 +133,20 @@ async function loadSummary() {
 }
 
 async function loadInventory() {
-  if (!adminPin()) {
-    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>Enter admin PIN.</strong><span>Inventory is protected.</span></div>`;
+  if (!hasAdminSession()) {
+    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>Unlock admin.</strong><span>Inventory is protected.</span></div>`;
     inventoryMovements.innerHTML = "";
     return;
   }
   try {
     const response = await fetch("/api/admin/inventory", {
-      headers: { "x-admin-pin": adminPin() },
+      headers: adminHeaders(),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Could not load inventory");
     inventoryCache = data;
   } catch (error) {
-    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Check the admin PIN and backend server.</span></div>`;
+    inventoryAlerts.innerHTML = `<div class="empty-results"><strong>${error.message}</strong><span>Unlock again and try once more.</span></div>`;
     inventoryMovements.innerHTML = "";
   }
 }
@@ -114,10 +156,7 @@ async function saveProduct(item) {
   const url = method === "PUT" ? `/api/products/${encodeURIComponent(item.id)}` : "/api/products";
   const response = await fetch(url, {
     method,
-    headers: {
-      "content-type": "application/json",
-      "x-admin-pin": adminPin(),
-    },
+    headers: adminHeaders({ "content-type": "application/json" }),
     body: JSON.stringify(item),
   });
   if (!response.ok) {
@@ -129,7 +168,7 @@ async function saveProduct(item) {
 async function deleteProduct(id) {
   const response = await fetch(`/api/products/${encodeURIComponent(id)}`, {
     method: "DELETE",
-    headers: { "x-admin-pin": adminPin() },
+    headers: adminHeaders(),
   });
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: "Delete failed" }));
@@ -140,10 +179,7 @@ async function deleteProduct(id) {
 async function updateOrderStatus(id, status) {
   const response = await fetch(`/api/admin/orders/${encodeURIComponent(id)}`, {
     method: "PUT",
-    headers: {
-      "content-type": "application/json",
-      "x-admin-pin": adminPin(),
-    },
+    headers: adminHeaders({ "content-type": "application/json" }),
     body: JSON.stringify({ status }),
   });
   const data = await response.json();
@@ -153,10 +189,7 @@ async function updateOrderStatus(id, status) {
 async function updatePaymentStatus(id, status) {
   const response = await fetch(`/api/admin/payments/${encodeURIComponent(id)}`, {
     method: "PUT",
-    headers: {
-      "content-type": "application/json",
-      "x-admin-pin": adminPin(),
-    },
+    headers: adminHeaders({ "content-type": "application/json" }),
     body: JSON.stringify({ status, provider: "manual-simulation" }),
   });
   const data = await response.json();
@@ -169,12 +202,26 @@ async function updateProductStock(id, stock) {
   await saveProduct({ ...product, stock: Number(stock) });
 }
 
-function downloadFromBackend(type) {
-  if (!adminPin()) {
-    note.textContent = "Enter admin PIN before export.";
+async function downloadFromBackend(type) {
+  if (!hasAdminSession()) {
+    note.textContent = "Unlock admin before export.";
     return;
   }
-  window.location.href = `/api/admin/export/${type}?pin=${encodeURIComponent(adminPin())}`;
+  const response = await fetch(`/api/admin/export/${type}`, {
+    headers: adminHeaders(),
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: "Export failed" }));
+    note.textContent = error.error || "Export failed";
+    return;
+  }
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `seedora-${type}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function render() {
@@ -394,8 +441,45 @@ function fillForm(item) {
   });
 }
 
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const pin = new FormData(loginForm).get("pin").toString().trim();
+  loginNote.textContent = "Unlocking admin...";
+  try {
+    const response = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ pin }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not unlock admin");
+    setAdminSession(data);
+    loginForm.reset();
+    loginNote.textContent = "";
+    note.textContent = "Admin unlocked.";
+    await refreshAdminData();
+  } catch (error) {
+    loginNote.textContent = error.message;
+  }
+});
+
+logoutButton.addEventListener("click", async () => {
+  if (hasAdminSession()) {
+    await fetch("/api/admin/logout", {
+      method: "POST",
+      headers: adminHeaders(),
+    }).catch(() => {});
+  }
+  setAdminSession(null);
+  note.textContent = "";
+});
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!hasAdminSession()) {
+    note.textContent = "Unlock admin before saving.";
+    return;
+  }
   const data = new FormData(form);
   const name = data.get("name").toString().trim();
   const item = {
@@ -420,9 +504,7 @@ form.addEventListener("submit", async (event) => {
   };
   try {
     await saveProduct(item);
-    const pin = adminPin();
     form.reset();
-    form.elements.adminPin.value = pin;
     note.textContent = "Product saved to backend.";
     await loadProducts();
     render();
@@ -508,10 +590,8 @@ orderList.addEventListener("click", (event) => {
 });
 
 resetForm.addEventListener("click", () => {
-  const pin = adminPin();
   form.reset();
   form.elements.id.value = "";
-  form.elements.adminPin.value = pin;
   note.textContent = "";
 });
 
@@ -530,13 +610,7 @@ exportOrdersCsv.addEventListener("click", () => downloadFromBackend("orders"));
 exportCustomersCsv.addEventListener("click", () => downloadFromBackend("customers"));
 
 refreshOrders.addEventListener("click", async () => {
-  await loadOrders();
-  await loadSummary();
-  await loadInventory();
-  renderOrders();
-  renderCustomers();
-  renderSummary();
-  renderInventory();
+  await refreshAdminData();
 });
 
 refreshInventory.addEventListener("click", async () => {
@@ -552,16 +626,22 @@ printInvoice.addEventListener("click", () => {
   window.print();
 });
 
-async function initAdmin() {
+async function refreshAdminData() {
   await loadProducts();
+  render();
+  if (!hasAdminSession()) return;
   await loadOrders();
   await loadSummary();
   await loadInventory();
-  render();
   renderOrders();
   renderCustomers();
   renderSummary();
   renderInventory();
+}
+
+async function initAdmin() {
+  renderAdminAccess();
+  await refreshAdminData();
 }
 
 initAdmin();

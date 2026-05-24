@@ -17,15 +17,34 @@
             <small>Product manager</small>
           </span>
         </a>
-        <a class="secondary-action" href="index.html">Open shop</a>
+        <div class="admin-header-actions">
+          <button class="secondary-action" id="adminLogout" type="button" hidden>Lock admin</button>
+          <a class="secondary-action" href="index.html">Open shop</a>
+        </div>
       </header>
 
       <section class="admin-hero">
         <div>
           <p class="eyebrow">Owner tools</p>
           <h1>Manage products</h1>
-          <p>Add new products, update prices, and attach product photo URLs. Saved products appear in the shop on this browser.</p>
+          <p>Update products, stock, orders, customer records, and exports from one protected owner console.</p>
         </div>
+      </section>
+
+      <section class="admin-login-card" id="adminLoginPanel">
+        <div>
+          <p class="eyebrow">Secure access</p>
+          <h2>Unlock owner console</h2>
+          <p>Enter your admin PIN once. This browser will stay unlocked for this work session.</p>
+        </div>
+        <form id="adminLoginForm" class="admin-login-form">
+          <label>
+            Admin PIN
+            <input name="pin" type="password" inputmode="numeric" autocomplete="current-password" required />
+          </label>
+          <button class="primary-action" type="submit">Unlock</button>
+          <p class="order-note" id="adminLoginNote" role="status"></p>
+        </form>
       </section>
 
       <section class="admin-summary" id="adminSummary">
@@ -50,10 +69,6 @@
       <section class="admin-layout">
         <form class="admin-form" id="productForm">
           <input type="hidden" name="id" />
-          <label>
-            Admin PIN
-            <input name="adminPin" type="password" placeholder="Default: business phone number" required />
-          </label>
           <label>
             Product name
             <input name="name" type="text" placeholder="Example: Seedora Premium Makhana" required />

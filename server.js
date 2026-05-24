@@ -28,6 +28,7 @@ const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
 const adminPin = process.env.SEEDORA_ADMIN_PIN || "9704597062";
 const sessionTtlMs = 1000 * 60 * 60 * 24 * 14;
+const adminSessionTtlMs = 1000 * 60 * 60 * 12;
 const otpTtlMs = 1000 * 60 * 5;
 const postgresEnabled = Boolean(process.env.DATABASE_URL);
 const postgresStateId = "seedora-main";
@@ -167,6 +168,7 @@ function hash(value, salt = crypto.randomBytes(16).toString("hex")) {
 }
 
 function verifyHash(value, stored) {
+  if (!stored || !stored.includes(":")) return false;
   const [salt, digest] = stored.split(":");
   return hash(value, salt).split(":")[1] === digest;
 }
@@ -182,6 +184,7 @@ function audit(db, action, details = {}) {
 
 function ensureCollections(db) {
   db.inventoryMovements ||= [];
+  db.adminSessions ||= [];
 }
 
 function recordInventoryMovement(db, movement) {
@@ -205,13 +208,45 @@ function notify(db, channel, to, template, payload = {}) {
   });
 }
 
-function requireAdmin(req, res) {
-  const requestUrl = new URL(req.url, `http://${req.headers.host}`);
-  if (req.headers["x-admin-pin"] !== adminPin && requestUrl.searchParams.get("pin") !== adminPin) {
-    json(res, 401, { error: "Admin PIN required" });
-    return false;
-  }
+function pruneAdminSessions(db) {
+  ensureCollections(db);
+  const now = Date.now();
+  db.adminSessions = db.adminSessions.filter((session) => !session.revokedAt && new Date(session.expiresAt).getTime() > now);
+}
+
+function createAdminSession(db) {
+  pruneAdminSessions(db);
+  const token = crypto.randomBytes(32).toString("hex");
+  const session = {
+    id: crypto.randomUUID(),
+    tokenHash: hash(token),
+    expiresAt: new Date(Date.now() + adminSessionTtlMs).toISOString(),
+    createdAt: new Date().toISOString(),
+  };
+  db.adminSessions.push(session);
+  return { token, expiresAt: session.expiresAt };
+}
+
+function hasValidAdminSession(db, token) {
+  if (!token) return false;
+  pruneAdminSessions(db);
+  return db.adminSessions.some((session) => verifyHash(token, session.tokenHash));
+}
+
+function revokeAdminSession(db, token) {
+  if (!token) return false;
+  const session = db.adminSessions.find((entry) => verifyHash(token, entry.tokenHash));
+  if (!session) return false;
+  session.revokedAt = new Date().toISOString();
   return true;
+}
+
+function requireAdmin(req, res, db) {
+  const adminToken = req.headers["x-admin-token"];
+  if (hasValidAdminSession(db, adminToken)) return true;
+  if (req.headers["x-admin-pin"] === adminPin) return true;
+  json(res, 401, { error: "Admin login required" });
+  return false;
 }
 
 function publicProduct(product) {
@@ -403,8 +438,29 @@ async function handleApi(req, res, url) {
     return;
   }
 
+  if (req.method === "POST" && url.pathname === "/api/admin/login") {
+    const body = await readBody(req);
+    if (String(body.pin || "") !== adminPin) {
+      json(res, 401, { error: "Invalid admin PIN" });
+      return;
+    }
+    const session = createAdminSession(db);
+    audit(db, "admin.login", { sessionId: crypto.createHash("sha256").update(session.token).digest("hex").slice(0, 12) });
+    await writeDb(db);
+    json(res, 200, { token: session.token, expiresAt: session.expiresAt });
+    return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/admin/logout") {
+    revokeAdminSession(db, req.headers["x-admin-token"]);
+    audit(db, "admin.logout", {});
+    await writeDb(db);
+    json(res, 200, { ok: true });
+    return;
+  }
+
   if (req.method === "POST" && url.pathname === "/api/products") {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     const body = await readBody(req);
     const product = cleanProduct(body);
     db.products.push(product);
@@ -416,7 +472,7 @@ async function handleApi(req, res, url) {
   }
 
   if ((req.method === "PUT" || req.method === "DELETE") && url.pathname.startsWith("/api/products/")) {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     const id = decodeURIComponent(url.pathname.split("/").pop());
     const index = db.products.findIndex((product) => product.id === id);
     if (index === -1) {
@@ -579,13 +635,13 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === "GET" && url.pathname === "/api/admin/orders") {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     json(res, 200, { orders: db.orders, customers: db.customers, addresses: db.addresses, payments: db.payments });
     return;
   }
 
   if (req.method === "GET" && url.pathname === "/api/admin/summary") {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     const totalRevenue = db.orders
       .filter((order) => !["cancelled", "refunded"].includes(order.status))
       .reduce((sum, order) => sum + Number(order.total || 0), 0);
@@ -611,7 +667,7 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === "GET" && url.pathname === "/api/admin/inventory") {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     ensureCollections(db);
     json(res, 200, {
       lowStock: db.products
@@ -623,7 +679,7 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === "GET" && url.pathname.startsWith("/api/admin/export/")) {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     const type = url.pathname.split("/").pop();
     const rows =
       type === "orders"
@@ -663,7 +719,7 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === "PUT" && url.pathname.startsWith("/api/admin/orders/")) {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     const parts = url.pathname.split("/");
     const orderId = decodeURIComponent(parts[4] || "");
     const body = await readBody(req);
@@ -694,7 +750,7 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === "PUT" && url.pathname.startsWith("/api/admin/payments/")) {
-    if (!requireAdmin(req, res)) return;
+    if (!requireAdmin(req, res, db)) return;
     const orderId = decodeURIComponent(url.pathname.split("/").pop());
     const body = await readBody(req);
     const order = db.orders.find((entry) => entry.id === orderId);
