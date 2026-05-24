@@ -7,6 +7,12 @@ const loginNote = document.querySelector("#adminLoginNote");
 const logoutButton = document.querySelector("#adminLogout");
 const adminSummary = document.querySelector("#adminSummary");
 const adminLayout = document.querySelector(".admin-layout");
+const backupPanel = document.querySelector("#backupPanel");
+const downloadBackup = document.querySelector("#downloadBackup");
+const backupFile = document.querySelector("#backupFile");
+const restoreConfirm = document.querySelector("#restoreConfirm");
+const restoreBackup = document.querySelector("#restoreBackup");
+const backupNote = document.querySelector("#backupNote");
 const resetForm = document.querySelector("#resetForm");
 const exportProducts = document.querySelector("#exportProducts");
 const exportProductsCsv = document.querySelector("#exportProductsCsv");
@@ -76,6 +82,7 @@ function renderAdminAccess() {
   loginPanel.hidden = unlocked;
   logoutButton.hidden = !unlocked;
   adminSummary.hidden = !unlocked;
+  backupPanel.hidden = !unlocked;
   adminLayout.hidden = !unlocked;
   orderDetailPanel.hidden = true;
   if (!unlocked) {
@@ -86,6 +93,7 @@ function renderAdminAccess() {
     paymentCache = [];
     inventoryCache = { lowStock: [], movements: [] };
   }
+  updateRestoreButton();
 }
 
 async function loadProducts() {
@@ -222,6 +230,83 @@ async function downloadFromBackend(type) {
   link.download = `seedora-${type}.csv`;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+async function downloadFullBackup() {
+  if (!hasAdminSession()) {
+    backupNote.textContent = "Unlock admin before downloading a backup.";
+    return;
+  }
+  backupNote.textContent = "Preparing backup...";
+  const response = await fetch("/api/admin/backup", {
+    headers: adminHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    backupNote.textContent = data.error || "Backup failed.";
+    return;
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `seedora-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  backupNote.textContent = `Backup ready: ${data.summary.productCount} products, ${data.summary.orderCount} orders, ${data.summary.customerCount} customers.`;
+}
+
+function updateRestoreButton() {
+  restoreBackup.disabled = !(hasAdminSession() && backupFile.files.length && restoreConfirm.value.trim() === "RESTORE SEEDORA DATA");
+}
+
+function readBackupFile() {
+  return new Promise((resolve, reject) => {
+    const file = backupFile.files[0];
+    if (!file) {
+      reject(new Error("Select a Seedora backup file first."));
+      return;
+    }
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      try {
+        resolve(JSON.parse(reader.result));
+      } catch {
+        reject(new Error("Selected file is not valid JSON."));
+      }
+    });
+    reader.addEventListener("error", () => reject(new Error("Could not read the backup file.")));
+    reader.readAsText(file);
+  });
+}
+
+async function restoreFullBackup() {
+  if (!hasAdminSession()) {
+    backupNote.textContent = "Unlock admin before restoring a backup.";
+    return;
+  }
+  if (restoreConfirm.value.trim() !== "RESTORE SEEDORA DATA") {
+    backupNote.textContent = "Type RESTORE SEEDORA DATA to confirm restore.";
+    return;
+  }
+  try {
+    backupNote.textContent = "Reading backup file...";
+    const backup = await readBackupFile();
+    const response = await fetch("/api/admin/backup/restore", {
+      method: "POST",
+      headers: adminHeaders({ "content-type": "application/json" }),
+      body: JSON.stringify({ backup, confirmRestore: restoreConfirm.value.trim() }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Restore failed");
+    backupFile.value = "";
+    restoreConfirm.value = "";
+    updateRestoreButton();
+    backupNote.textContent = `Restore complete: ${data.summary.productCount} products and ${data.summary.orderCount} orders.`;
+    await refreshAdminData();
+  } catch (error) {
+    backupNote.textContent = error.message;
+  }
 }
 
 function render() {
@@ -493,7 +578,7 @@ form.addEventListener("submit", async (event) => {
     description: data.get("description").toString().trim(),
     image: data.get("image").toString().trim(),
     rating: 4.5,
-    stock: 100,
+    stock: Number(data.get("stock")),
     benefits: data
       .get("benefits")
       .toString()
@@ -608,6 +693,10 @@ exportProducts.addEventListener("click", () => {
 exportProductsCsv.addEventListener("click", () => downloadFromBackend("products"));
 exportOrdersCsv.addEventListener("click", () => downloadFromBackend("orders"));
 exportCustomersCsv.addEventListener("click", () => downloadFromBackend("customers"));
+downloadBackup.addEventListener("click", downloadFullBackup);
+backupFile.addEventListener("change", updateRestoreButton);
+restoreConfirm.addEventListener("input", updateRestoreButton);
+restoreBackup.addEventListener("click", restoreFullBackup);
 
 refreshOrders.addEventListener("click", async () => {
   await refreshAdminData();

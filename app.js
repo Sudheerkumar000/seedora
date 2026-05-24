@@ -1323,7 +1323,9 @@ checkoutForm.addEventListener("submit", async (event) => {
     showToast("Please enter a valid 6-digit pincode.");
     return;
   }
-  let orderId = `SDR${Date.now().toString().slice(-6)}`;
+  const submitButton = checkoutForm.querySelector('button[type="submit"]');
+  if (submitButton) submitButton.disabled = true;
+  let savedOrder = null;
   try {
     const response = await fetch("/api/orders", {
       method: "POST",
@@ -1351,16 +1353,21 @@ checkoutForm.addEventListener("submit", async (event) => {
         })),
       }),
     });
-    if (response.ok) {
-      const saved = await response.json();
-      orderId = saved.order.id;
+    const saved = await response.json().catch(() => ({}));
+    if (!response.ok || !saved.order) {
+      throw new Error(saved.error || "Could not place your order. Please try again.");
     }
-  } catch {
-    showToast("Order saved locally. Backend is not reachable.");
+    savedOrder = saved.order;
+  } catch (error) {
+    const message = error.message || "Could not place your order. Please try again.";
+    orderNote.textContent = message;
+    showToast(message);
+    if (submitButton) submitButton.disabled = false;
+    return;
   }
   orderReceipt.hidden = false;
   orderReceipt.innerHTML = `
-    <strong>Order ${orderId} confirmed</strong>
+    <strong>Order ${savedOrder.id} confirmed</strong>
     <span>Thanks ${name}. Your Seedora order will be dispatched in 24 hours.</span>
     <span>Payment: ${payment}</span>
   `;
@@ -1371,6 +1378,7 @@ checkoutForm.addEventListener("submit", async (event) => {
   couponInput.value = "";
   persistShop();
   renderCart();
+  if (submitButton) submitButton.disabled = false;
 });
 
 function initHeroRoll() {

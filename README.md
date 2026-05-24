@@ -69,13 +69,15 @@ DATABASE_URL=postgresql://...
 
 When `DATABASE_URL` is present, Seedora stores the live business state in PostgreSQL in the `seedora_app_state` table. Keep `.env` private and never push it to GitHub.
 
+The admin console includes a protected backup area. Use it to download one JSON backup containing catalog, orders, customers, payments, settings, and inventory history. Restore is guarded by the confirmation phrase shown in the admin console.
+
 ## Next Production Steps
 
 - Replace illustrated placeholders with real product photos
 - Connect checkout to Razorpay/Cashfree or another Indian payment gateway
 - Deploy the backend with `DATABASE_URL` configured on Render/Railway
 - Add delivery-rate rules by pincode
-- Add authentication for the admin page before launch
+- Rotate the current admin PIN and database password before accepting real orders
 
 ## Deploy On Render
 

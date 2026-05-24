@@ -30,6 +30,7 @@ const adminPin = process.env.SEEDORA_ADMIN_PIN || "9704597062";
 const sessionTtlMs = 1000 * 60 * 60 * 24 * 14;
 const adminSessionTtlMs = 1000 * 60 * 60 * 12;
 const otpTtlMs = 1000 * 60 * 5;
+const maxJsonBodyBytes = 5_000_000;
 const postgresEnabled = Boolean(process.env.DATABASE_URL);
 const postgresStateId = "seedora-main";
 let pgPool;
@@ -135,7 +136,7 @@ function readBody(req) {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 1_000_000) {
+      if (body.length > maxJsonBodyBytes) {
         reject(new Error("Request body is too large"));
         req.destroy();
       }
@@ -185,6 +186,98 @@ function audit(db, action, details = {}) {
 function ensureCollections(db) {
   db.inventoryMovements ||= [];
   db.adminSessions ||= [];
+}
+
+function withoutSessionFields(customer) {
+  const { sessionTokenHash, sessionExpiresAt, ...rest } = customer;
+  return rest;
+}
+
+function cleanNotificationForBackup(notification) {
+  const payload = { ...(notification.payload || {}) };
+  delete payload.otp;
+  return { ...notification, payload };
+}
+
+function backupSummary(data) {
+  return {
+    productCount: data.products.length,
+    categoryCount: data.categories.length,
+    orderCount: data.orders.length,
+    customerCount: data.customers.length,
+    paymentCount: data.payments.length,
+    inventoryMovementCount: data.inventoryMovements.length,
+  };
+}
+
+function createBackup(db) {
+  const data = {
+    meta: { ...db.meta },
+    settings: { ...db.settings },
+    categories: db.categories.map((item) => ({ ...item })),
+    products: db.products.map((item) => ({ ...item })),
+    customers: db.customers.map(withoutSessionFields),
+    addresses: db.addresses.map((item) => ({ ...item })),
+    orders: db.orders.map((item) => ({ ...item })),
+    payments: db.payments.map((item) => ({ ...item })),
+    notifications: db.notifications.map(cleanNotificationForBackup),
+    auditLogs: db.auditLogs.map((item) => ({ ...item })),
+    inventoryMovements: (db.inventoryMovements || []).map((item) => ({ ...item })),
+  };
+  const integritySha256 = crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex");
+  return {
+    schema: "seedora-backup-v1",
+    exportedAt: new Date().toISOString(),
+    app: "Seedora",
+    summary: backupSummary(data),
+    integritySha256,
+    data,
+  };
+}
+
+function restoreDbFromBackup(currentDb, backup) {
+  if (!backup || backup.schema !== "seedora-backup-v1" || !backup.data) {
+    throw new Error("Invalid Seedora backup file");
+  }
+  const data = backup.data;
+  const requiredArrays = [
+    "categories",
+    "products",
+    "customers",
+    "addresses",
+    "orders",
+    "payments",
+    "notifications",
+    "auditLogs",
+    "inventoryMovements",
+  ];
+  if (!data.settings || typeof data.settings !== "object") throw new Error("Backup settings are missing");
+  requiredArrays.forEach((key) => {
+    if (!Array.isArray(data[key])) throw new Error(`Backup ${key} data is missing`);
+  });
+
+  const nextDb = {
+    meta: {
+      ...(data.meta || {}),
+      restoredAt: new Date().toISOString(),
+      restoredFromBackupExportedAt: backup.exportedAt,
+    },
+    settings: data.settings,
+    categories: data.categories,
+    products: data.products,
+    customers: data.customers.map(withoutSessionFields),
+    addresses: data.addresses,
+    orders: data.orders,
+    payments: data.payments,
+    otpVerifications: [],
+    notifications: data.notifications.map(cleanNotificationForBackup),
+    auditLogs: data.auditLogs,
+    inventoryMovements: data.inventoryMovements,
+    adminSessions: currentDb.adminSessions || [],
+  };
+  ensureCollections(nextDb);
+  audit(nextDb, "backup.restored", { backupExportedAt: backup.exportedAt, summary: backupSummary(nextDb) });
+  return nextDb;
 }
 
 function recordInventoryMovement(db, movement) {
@@ -575,27 +668,44 @@ async function handleApi(req, res, url) {
   if (req.method === "POST" && url.pathname === "/api/orders") {
     const body = await readBody(req);
     const customerInput = body.customer || {};
-    if (!/^\d{10}$/.test(String(customerInput.mobile || ""))) throw new Error("Valid customer mobile is required");
+    const addressInput = body.address || {};
+    const customerName = String(customerInput.name || "").trim();
+    const customerMobile = String(customerInput.mobile || "").trim();
+    const customerEmail = String(customerInput.email || "").trim();
+    const area = String(addressInput.area || "").trim();
+    const addressText = String(addressInput.address || "").trim();
+    const pincode = String(addressInput.pincode || "").trim();
+    if (!customerName) throw new Error("Customer name is required");
+    if (!/^\d{10}$/.test(customerMobile)) throw new Error("Valid customer mobile is required");
+    if (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) throw new Error("Valid customer email is required");
+    if (!area) throw new Error("Delivery area is required");
+    if (!addressText) throw new Error("Delivery address is required");
+    if (!/^\d{6}$/.test(pincode)) throw new Error("Valid delivery pincode is required");
     const totals = calculateOrder(db, body);
-    let customer = db.customers.find((entry) => entry.mobile === String(customerInput.mobile));
+    let customer = db.customers.find((entry) => entry.mobile === customerMobile);
     if (!customer) {
       customer = {
         id: crypto.randomUUID(),
-        name: String(customerInput.name || ""),
-        mobile: String(customerInput.mobile),
-        email: String(customerInput.email || ""),
+        name: customerName,
+        mobile: customerMobile,
+        email: customerEmail,
         consent: Boolean(customerInput.consent),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
       db.customers.push(customer);
+    } else {
+      customer.name = customerName;
+      customer.email = customerEmail;
+      customer.consent = Boolean(customerInput.consent);
+      customer.updatedAt = new Date().toISOString();
     }
     const address = {
       id: crypto.randomUUID(),
       customerId: customer.id,
-      area: String(body.address?.area || ""),
-      address: String(body.address?.address || ""),
-      pincode: String(body.address?.pincode || ""),
+      area,
+      address: addressText,
+      pincode,
       createdAt: new Date().toISOString(),
     };
     db.addresses.push(address);
@@ -675,6 +785,30 @@ async function handleApi(req, res, url) {
         .map((product) => ({ id: product.id, name: product.name, category: product.category, stock: product.stock })),
       movements: db.inventoryMovements.slice(-100).reverse(),
     });
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/admin/backup") {
+    if (!requireAdmin(req, res, db)) return;
+    const backup = createBackup(db);
+    res.writeHead(200, {
+      "content-type": "application/json; charset=utf-8",
+      "content-disposition": `attachment; filename="seedora-backup-${backup.exportedAt.slice(0, 10)}.json"`,
+    });
+    res.end(JSON.stringify(backup, null, 2));
+    return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/admin/backup/restore") {
+    if (!requireAdmin(req, res, db)) return;
+    const body = await readBody(req);
+    if (body.confirmRestore !== "RESTORE SEEDORA DATA") {
+      json(res, 400, { error: "Restore confirmation is required" });
+      return;
+    }
+    const nextDb = restoreDbFromBackup(db, body.backup || body);
+    await writeDb(nextDb);
+    json(res, 200, { ok: true, summary: backupSummary(nextDb) });
     return;
   }
 

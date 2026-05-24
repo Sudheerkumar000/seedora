@@ -2500,6 +2500,58 @@ h1 {
   font-size: 1.55rem;
 }
 
+.admin-backup-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 560px);
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 22px;
+  padding: 18px;
+  border: 1px solid rgba(36, 107, 69, 0.16);
+  border-radius: 8px;
+  background: #fffdf7;
+}
+
+.admin-backup-panel h2 {
+  margin: 4px 0 8px;
+  font-size: 1.45rem;
+}
+
+.admin-backup-panel p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.backup-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.backup-actions .order-note {
+  grid-column: 1 / -1;
+}
+
+.backup-file,
+.restore-confirm {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.backup-file input,
+.restore-confirm input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+}
+
 .admin-form,
 .admin-products {
   padding: 18px;
@@ -2765,7 +2817,8 @@ h1 {
   .shop-layout,
   .admin-layout,
   .admin-summary,
-  .admin-login-card {
+  .admin-login-card,
+  .admin-backup-panel {
     grid-template-columns: 1fr;
   }
 

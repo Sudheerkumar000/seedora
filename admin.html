@@ -66,6 +66,27 @@
         </article>
       </section>
 
+      <section class="admin-backup-panel" id="backupPanel">
+        <div>
+          <p class="eyebrow">Business safety</p>
+          <h2>Backup and restore</h2>
+          <p>Download one protected backup for catalog, orders, customers, payments, and stock history.</p>
+        </div>
+        <div class="backup-actions">
+          <button class="primary-action" id="downloadBackup" type="button">Download backup</button>
+          <label class="backup-file">
+            Select backup file
+            <input id="backupFile" type="file" accept="application/json" />
+          </label>
+          <label class="restore-confirm">
+            Restore confirmation
+            <input id="restoreConfirm" type="text" placeholder="Type RESTORE SEEDORA DATA" />
+          </label>
+          <button class="secondary-action" id="restoreBackup" type="button" disabled>Restore backup</button>
+          <p class="order-note" id="backupNote" role="status"></p>
+        </div>
+      </section>
+
       <section class="admin-layout">
         <form class="admin-form" id="productForm">
           <input type="hidden" name="id" />
@@ -106,12 +127,16 @@
             </label>
           </div>
           <label>
+            Stock
+            <input name="stock" type="number" min="0" placeholder="100" required />
+          </label>
+          <label>
             Description
             <textarea name="description" placeholder="Short product description for the catalog." required></textarea>
           </label>
           <label>
-            Photo URL
-            <input name="image" type="url" placeholder="https://example.com/product.jpg" />
+            Photo path or URL
+            <input name="image" type="text" placeholder="assets/products/product-name.png or https://example.com/product.jpg" />
           </label>
           <label>
             Benefits

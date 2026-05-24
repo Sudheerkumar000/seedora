@@ -18,6 +18,8 @@ The local backend supports:
 - Admin order listing and status updates
 - Admin dashboard summary
 - CSV exports for products, orders, and customers
+- Protected full business backup download
+- Guarded full business restore from a Seedora backup file
 - Stock update workflow
 - Automatic stock reduction on order creation
 - Automatic restock on cancellation/refund
@@ -105,7 +107,9 @@ It stores:
 - `PUT /api/admin/orders/:id` updates packing, shipping, delivery, cancellation, and refund status.
 - `PUT /api/admin/payments/:orderId` simulates payment status changes for local testing.
 - `GET /api/admin/inventory` returns low-stock alerts and stock movement history.
-- `GET /api/admin/export/products|orders|customers?pin=...` downloads CSV exports.
+- `GET /api/admin/export/products|orders|customers` downloads CSV exports with an admin session token.
+- `GET /api/admin/backup` downloads a JSON backup of settings, catalog, orders, customers, payments, and stock history.
+- `POST /api/admin/backup/restore` restores a Seedora backup file only when the request includes the confirmation phrase.
 
 Payment simulation supports `payment_pending`, `paid`, `failed`, `refunded`, and `cod_pending`. A paid status creates a local gateway-style payment ID. A refunded status marks the order as refunded and restores reserved stock one time.
 
