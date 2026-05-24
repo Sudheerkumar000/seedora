@@ -570,6 +570,9 @@ const cartDrawer = document.querySelector("#cartDrawer");
 const authDrawer = document.querySelector("#authDrawer");
 const overlay = document.querySelector("#overlay");
 const productDetails = document.querySelector("#productDetails");
+const productPage = document.querySelector("#productPage");
+const productPageDetails = document.querySelector("#productPageDetails");
+const productBackButton = document.querySelector("#productBackButton");
 const accountButton = document.querySelector("#accountButton");
 const cartButton = document.querySelector("#cartButton");
 const cartCount = document.querySelector("#cartCount");
@@ -772,6 +775,10 @@ function productImageMarkup(product, size = "card") {
   `;
 }
 
+function productPageUrl(productId) {
+  return `${window.location.pathname}?product=${encodeURIComponent(productId)}`;
+}
+
 function renderCategories() {
   categoryList.innerHTML = categories
     .map((category) => {
@@ -840,20 +847,22 @@ function renderProducts() {
       (product) => `
       <article class="product-card" data-product-card="${product.id}">
         <div class="product-visual">
-          <span class="badge">${product.tag}</span>
+          <a class="product-link product-visual-link" href="${productPageUrl(product.id)}" data-product-link="${product.id}" aria-label="Open ${product.name} details">
+            <span class="badge">${product.tag}</span>
+            ${productImageMarkup(product)}
+          </a>
           <button class="wish-toggle ${wishlist.has(product.id) ? "saved" : ""}" type="button" data-wish="${product.id}" aria-label="Save ${product.name}">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
             </svg>
           </button>
-          ${productImageMarkup(product)}
         </div>
         <div class="product-body">
           <div class="product-meta">
             <span>${product.category}</span>
             <span>${product.rating.toFixed(1)} star</span>
           </div>
-          <h3>${product.name}</h3>
+          <h3><a class="product-title-link" href="${productPageUrl(product.id)}" data-product-link="${product.id}">${product.name}</a></h3>
           <p>${product.description}</p>
           <div class="price-row">
             <strong>${currency(product.price)}</strong>
@@ -946,6 +955,89 @@ function renderProductDetails(productId) {
   const visual = productDetails.querySelector(".detail-visual");
   setVisualStyle(visual, product);
   openDrawer(productDrawer);
+}
+
+function showShopPage({ push = true } = {}) {
+  document.querySelectorAll("main > section").forEach((section) => {
+    section.hidden = section === productPage;
+  });
+  closeDrawers();
+  document.title = "Seedora | Premium Dry Fruits";
+  if (push) history.pushState({}, "", `${window.location.pathname}#shop`);
+  if (push) document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+}
+
+function renderProductPage(productId, { push = true } = {}) {
+  const product = products.find((item) => item.id === productId);
+  if (!product) {
+    showShopPage({ push });
+    return;
+  }
+
+  selectedProductId = product.id;
+  selectedVariant = product.pack;
+  const options = variantOptions(product);
+  productPageDetails.innerHTML = `
+    <article class="product-detail-page">
+      <div class="product-page-gallery product-visual">
+        ${productImageMarkup(product, "page")}
+      </div>
+      <div class="product-page-copy">
+        <p class="eyebrow">${product.category} · ${product.tag}</p>
+        <h1>${product.name}</h1>
+        <p>${product.description}</p>
+        <div class="price-row product-page-price" id="productPagePrice">
+          <strong>${currency(variantPrice(product, selectedVariant))}</strong>
+          <s>${currency(variantMrp(product, selectedVariant))}</s>
+          <span>${productDiscount(product)}% off</span>
+        </div>
+        <div class="stock-row detail-stock">
+          <span>In stock</span>
+          <span>${product.rating.toFixed(1)} star · Fresh dispatch in 24 hours</span>
+        </div>
+        <ul class="detail-list">
+          ${product.benefits.map((benefit) => `<li>${benefit}</li>`).join("")}
+        </ul>
+        <div class="variant-row" aria-label="Pack sizes">
+          ${options
+            .map(
+              (size) => `
+              <button class="${size === product.pack ? "active" : ""}" type="button" data-page-variant="${size}">
+                ${size}
+              </button>
+            `,
+            )
+            .join("")}
+        </div>
+        <div class="product-page-actions">
+          <button class="primary-action" type="button" data-page-add="${product.id}">Add ${product.pack} · ${currency(product.price)}</button>
+          <button class="secondary-action" type="button" data-page-wish="${product.id}">
+            ${wishlist.has(product.id) ? "Saved to wishlist" : "Save to wishlist"}
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+
+  const visual = productPageDetails.querySelector(".product-page-gallery");
+  setVisualStyle(visual, product);
+  document.querySelectorAll("main > section").forEach((section) => {
+    section.hidden = section !== productPage;
+  });
+  productPage.hidden = false;
+  closeDrawers();
+  document.title = `${product.name} | Seedora`;
+  if (push) history.pushState({ productId: product.id }, "", productPageUrl(product.id));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function handleProductRoute() {
+  const productId = new URLSearchParams(window.location.search).get("product");
+  if (productId) {
+    renderProductPage(productId, { push: false });
+  } else {
+    showShopPage({ push: false });
+  }
 }
 
 function addToCart(productId, variant) {
@@ -1073,10 +1165,12 @@ categoryList.addEventListener("click", (event) => {
 });
 
 document.querySelectorAll("[data-nav-category]").forEach((link) => {
-  link.addEventListener("click", () => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
     selectedCategory = link.dataset.navCategory;
     activeQuickFilter = "all";
     searchInput.value = "";
+    showShopPage();
     renderCategories();
     renderProducts();
   });
@@ -1086,6 +1180,7 @@ productGrid.addEventListener("click", (event) => {
   const addButton = event.target.closest("[data-add]");
   const viewButton = event.target.closest("[data-view]");
   const wishButton = event.target.closest("[data-wish]");
+  const productLink = event.target.closest("[data-product-link]");
   if (wishButton) {
     const productId = wishButton.dataset.wish;
     if (wishlist.has(productId)) {
@@ -1100,12 +1195,18 @@ productGrid.addEventListener("click", (event) => {
     renderCart();
     return;
   }
+  if (productLink) {
+    event.preventDefault();
+    renderProductPage(productLink.dataset.productLink);
+    return;
+  }
   if (addButton) {
     addToCart(addButton.dataset.add);
     openDrawer(cartDrawer);
+    return;
   }
   if (viewButton) {
-    renderProductDetails(viewButton.dataset.view);
+    renderProductPage(viewButton.dataset.view);
   }
 });
 
@@ -1151,6 +1252,47 @@ productDetails.addEventListener("click", (event) => {
   }
 });
 
+productPageDetails.addEventListener("click", (event) => {
+  const variantButton = event.target.closest("[data-page-variant]");
+  const addButton = event.target.closest("[data-page-add]");
+  const wishButton = event.target.closest("[data-page-wish]");
+  const product = products.find((item) => item.id === selectedProductId);
+  if (!product) return;
+
+  if (variantButton) {
+    selectedVariant = variantButton.dataset.pageVariant;
+    productPageDetails.querySelectorAll("[data-page-variant]").forEach((button) => button.classList.remove("active"));
+    variantButton.classList.add("active");
+    productPageDetails.querySelector("#productPagePrice").innerHTML = `
+      <strong>${currency(variantPrice(product, selectedVariant))}</strong>
+      <s>${currency(variantMrp(product, selectedVariant))}</s>
+      <span>${productDiscount(product)}% off</span>
+    `;
+    productPageDetails.querySelector("[data-page-add]").textContent =
+      `Add ${selectedVariant} · ${currency(variantPrice(product, selectedVariant))}`;
+  }
+
+  if (wishButton) {
+    if (wishlist.has(product.id)) {
+      wishlist.delete(product.id);
+      wishButton.textContent = "Save to wishlist";
+      showToast("Removed from wishlist.");
+    } else {
+      wishlist.add(product.id);
+      wishButton.textContent = "Saved to wishlist";
+      showToast("Saved to wishlist.");
+    }
+    persistShop();
+    renderProducts();
+    renderCart();
+  }
+
+  if (addButton) {
+    addToCart(product.id, selectedVariant);
+    openDrawer(cartDrawer);
+  }
+});
+
 cartItems.addEventListener("click", (event) => {
   const button = event.target.closest("[data-qty]");
   if (!button) return;
@@ -1158,26 +1300,37 @@ cartItems.addEventListener("click", (event) => {
 });
 
 document.addEventListener("click", (event) => {
+  const sectionLink = event.target.closest('a[href="#home"], a[href="#shop"], a[href="#gift"], a[href="#plans"]');
   const closeButton = event.target.closest("[data-close-drawer]");
   const giftButton = event.target.closest("[data-open-product]");
   const planButton = event.target.closest("[data-add-plan]");
   const footerCategory = event.target.closest("[data-footer-category]");
 
+  if (sectionLink) {
+    event.preventDefault();
+    const target = sectionLink.getAttribute("href");
+    showShopPage({ push: false });
+    history.pushState({}, "", `${window.location.pathname}${target}`);
+    document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
+  }
   if (closeButton || event.target === overlay) closeDrawers();
-  if (giftButton) renderProductDetails(giftButton.dataset.openProduct);
+  if (giftButton) renderProductPage(giftButton.dataset.openProduct);
   if (planButton) {
     addPlan(planButton.dataset.addPlan);
     openDrawer(cartDrawer);
   }
   if (footerCategory) {
+    event.preventDefault();
     selectedCategory = footerCategory.dataset.footerCategory;
     activeQuickFilter = "all";
     searchInput.value = "";
+    showShopPage();
     renderCategories();
     renderProducts();
   }
 });
 
+productBackButton.addEventListener("click", () => showShopPage());
 cartButton.addEventListener("click", () => openDrawer(cartDrawer));
 accountButton.addEventListener("click", () => {
   renderAccount();
@@ -1221,6 +1374,7 @@ resetFilters.addEventListener("click", () => {
   renderCategories();
   renderProducts();
 });
+window.addEventListener("popstate", handleProductRoute);
 applyCoupon.addEventListener("click", () => {
   const code = couponInput.value.trim().toUpperCase();
   if (code === businessSettings.couponCode) {
@@ -1410,6 +1564,7 @@ async function initSeedora() {
   renderCategories();
   renderProducts();
   renderCart();
+  handleProductRoute();
 }
 
 initSeedora();
