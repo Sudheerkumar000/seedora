@@ -1400,7 +1400,7 @@ function initHeroRoll() {
   window.setInterval(() => {
     activeIndex = (activeIndex + 1) % heroShots.length;
     showCategoryFan();
-  }, Math.round(5000 / heroShots.length));
+  }, 5000);
 }
 
 async function initSeedora() {
