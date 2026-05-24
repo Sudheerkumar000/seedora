@@ -1034,9 +1034,7 @@ function renderProductPage(productId, { push = true } = {}) {
 function handleProductRoute() {
   const productId = new URLSearchParams(window.location.search).get("product");
   if (productId) {
-    renderProductPage(productId, { push: false });
-  } else {
-    showShopPage({ push: false });
+    window.location.replace(productPageUrl(productId));
   }
 }
 
@@ -1195,7 +1193,16 @@ productGrid.addEventListener("click", (event) => {
     renderCart();
     return;
   }
-  if (productLink) return;
+  if (productLink) {
+    event.preventDefault();
+    window.location.assign(productPageUrl(productLink.dataset.productLink));
+    return;
+  }
+  const productCard = event.target.closest("[data-product-card]");
+  if (productCard && !event.target.closest("button, a, input, select, textarea")) {
+    window.location.assign(productPageUrl(productCard.dataset.productCard));
+    return;
+  }
   if (addButton) {
     addToCart(addButton.dataset.add);
     openDrawer(cartDrawer);
