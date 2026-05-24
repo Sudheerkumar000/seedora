@@ -109,11 +109,11 @@ function renderProduct() {
             .join("")}
         </div>
         <div class="product-page-actions">
-          <button class="primary-action" type="button" data-page-add>Add ${selectedVariant} · ${currency(variantPrice(product, selectedVariant))}</button>
+          <button class="primary-action" type="button" data-page-buy>Buy now · ${currency(variantPrice(product, selectedVariant))}</button>
+          <button class="secondary-action" type="button" data-page-add>Add to bag</button>
           <button class="secondary-action" type="button" data-page-wish>
             ${wishlist.has(product.id) ? "Saved to wishlist" : "Save to wishlist"}
           </button>
-          <a class="secondary-action" href="/#cart">Go to cart</a>
         </div>
       </div>
     </article>
@@ -132,9 +132,26 @@ async function loadProduct() {
   updateCartCount();
 }
 
+function addSelectedProductToCart() {
+  const cart = cartEntries();
+  const key = `${product.id}-${selectedVariant}`;
+  const existing = cart.get(key);
+  cart.set(key, {
+    ...product,
+    key,
+    pack: selectedVariant,
+    price: variantPrice(product, selectedVariant),
+    mrp: variantMrp(product, selectedVariant),
+    qty: existing ? existing.qty + 1 : 1,
+  });
+  localStorage.setItem("seedoraCart", JSON.stringify([...cart.entries()]));
+  updateCartCount();
+}
+
 productPageDetails.addEventListener("click", (event) => {
   const variantButton = event.target.closest("[data-page-variant]");
   const addButton = event.target.closest("[data-page-add]");
+  const buyButton = event.target.closest("[data-page-buy]");
   const wishButton = event.target.closest("[data-page-wish]");
 
   if (variantButton) {
@@ -143,20 +160,14 @@ productPageDetails.addEventListener("click", (event) => {
   }
 
   if (addButton) {
-    const cart = cartEntries();
-    const key = `${product.id}-${selectedVariant}`;
-    const existing = cart.get(key);
-    cart.set(key, {
-      ...product,
-      key,
-      pack: selectedVariant,
-      price: variantPrice(product, selectedVariant),
-      mrp: variantMrp(product, selectedVariant),
-      qty: existing ? existing.qty + 1 : 1,
-    });
-    localStorage.setItem("seedoraCart", JSON.stringify([...cart.entries()]));
-    updateCartCount();
+    addSelectedProductToCart();
     productPageNote.textContent = `${product.name} added to your bag.`;
+  }
+
+  if (buyButton) {
+    addSelectedProductToCart();
+    productPageNote.textContent = "Opening checkout...";
+    window.location.href = "/#cart";
   }
 
   if (wishButton) {
