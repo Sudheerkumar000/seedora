@@ -776,7 +776,7 @@ function productImageMarkup(product, size = "card") {
 }
 
 function productPageUrl(productId) {
-  return `${window.location.pathname}?product=${encodeURIComponent(productId)}`;
+  return `product.html?product=${encodeURIComponent(productId)}`;
 }
 
 function renderCategories() {
@@ -1195,18 +1195,14 @@ productGrid.addEventListener("click", (event) => {
     renderCart();
     return;
   }
-  if (productLink) {
-    event.preventDefault();
-    renderProductPage(productLink.dataset.productLink);
-    return;
-  }
+  if (productLink) return;
   if (addButton) {
     addToCart(addButton.dataset.add);
     openDrawer(cartDrawer);
     return;
   }
   if (viewButton) {
-    renderProductPage(viewButton.dataset.view);
+    window.location.href = productPageUrl(viewButton.dataset.view);
   }
 });
 
@@ -1314,7 +1310,7 @@ document.addEventListener("click", (event) => {
     document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
   }
   if (closeButton || event.target === overlay) closeDrawers();
-  if (giftButton) renderProductPage(giftButton.dataset.openProduct);
+  if (giftButton) window.location.href = productPageUrl(giftButton.dataset.openProduct);
   if (planButton) {
     addPlan(planButton.dataset.addPlan);
     openDrawer(cartDrawer);
@@ -1565,6 +1561,7 @@ async function initSeedora() {
   renderProducts();
   renderCart();
   handleProductRoute();
+  if (window.location.hash === "#cart") openDrawer(cartDrawer);
 }
 
 initSeedora();
