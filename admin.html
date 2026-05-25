@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seedora Product Manager</title>
     <link rel="icon" href="seedora-logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=business-ops-v1" />
   </head>
   <body>
     <main class="admin-shell">
@@ -139,6 +139,11 @@
             <input name="image" type="text" placeholder="assets/products/product-name.png or https://example.com/product.jpg" />
           </label>
           <label>
+            Upload product photo
+            <input id="productImageUpload" type="file" accept="image/png,image/jpeg,image/webp" />
+          </label>
+          <div class="admin-image-preview" id="productImagePreview" hidden></div>
+          <label>
             Benefits
             <input name="benefits" type="text" placeholder="Fresh pack, Premium quality, All India delivery" />
           </label>
@@ -222,6 +227,6 @@
       </section>
     </main>
 
-    <script src="admin.js"></script>
+    <script src="admin.js?v=business-ops-v1"></script>
   </body>
 </html>

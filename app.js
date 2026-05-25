@@ -555,6 +555,8 @@ let selectedProductId = products[0].id;
 let selectedVariant = "250 g";
 let activeQuickFilter = "all";
 let appliedCoupon = "";
+let deliveryQuote = null;
+let deliveryCheckTimer = null;
 
 const productGrid = document.querySelector("#productGrid");
 const categoryList = document.querySelector("#categoryList");
@@ -722,6 +724,49 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => {
     if (orderNote.textContent === message) orderNote.textContent = "";
   }, 2600);
+}
+
+function cartTotals() {
+  const items = [...cart.values()];
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const savings = items.reduce((sum, item) => sum + (item.mrp - item.price) * item.qty, 0);
+  const couponDiscount = appliedCoupon && subtotal > 0 ? Math.round(subtotal * 0.1) : 0;
+  const deliveryBase = Math.max(0, subtotal - couponDiscount);
+  return { items, subtotal, savings, couponDiscount, deliveryBase };
+}
+
+async function updateDeliveryQuote({ force = false } = {}) {
+  const pincodeInput = checkoutForm?.elements?.pincode;
+  if (!pincodeInput) return null;
+  const pincode = pincodeInput.value.trim();
+  const { deliveryBase } = cartTotals();
+  if (!/^\d{6}$/.test(pincode)) {
+    deliveryQuote = null;
+    renderCart();
+    return null;
+  }
+  const quoteKey = `${pincode}-${deliveryBase}`;
+  if (!force && deliveryQuote?.quoteKey === quoteKey) return deliveryQuote;
+  try {
+    const response = await fetch(`/api/delivery/check?pincode=${encodeURIComponent(pincode)}&subtotal=${deliveryBase}`);
+    const quote = await response.json();
+    deliveryQuote = { ...quote, quoteKey };
+  } catch {
+    deliveryQuote = {
+      serviceable: false,
+      message: "Delivery check is temporarily unavailable. Please try again.",
+      quoteKey,
+    };
+  }
+  renderCart();
+  return deliveryQuote;
+}
+
+function scheduleDeliveryCheck() {
+  window.clearTimeout(deliveryCheckTimer);
+  deliveryCheckTimer = window.setTimeout(() => {
+    updateDeliveryQuote().catch(() => {});
+  }, 350);
 }
 
 function renderAccount() {
@@ -1055,6 +1100,7 @@ function addToCart(productId, variant) {
   });
   persistShop();
   renderCart();
+  scheduleDeliveryCheck();
   showToast(`${product.name} added to your bag.`);
 }
 
@@ -1082,6 +1128,7 @@ function addPlan(planName) {
   });
   persistShop();
   renderCart();
+  scheduleDeliveryCheck();
   showToast(`${product.name} added to your bag.`);
 }
 
@@ -1096,15 +1143,20 @@ function updateQty(key, delta) {
   }
   persistShop();
   renderCart();
+  scheduleDeliveryCheck();
 }
 
 function renderCart() {
-  const items = [...cart.values()];
+  const { items, subtotal, savings, couponDiscount } = cartTotals();
   const itemCount = items.reduce((sum, item) => sum + item.qty, 0);
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const savings = items.reduce((sum, item) => sum + (item.mrp - item.price) * item.qty, 0);
-  const couponDiscount = appliedCoupon && subtotal > 0 ? Math.round(subtotal * 0.1) : 0;
-  const delivery = subtotal === 0 || subtotal >= freeDeliveryThreshold ? 0 : 49;
+  const delivery =
+    subtotal === 0
+      ? 0
+      : deliveryQuote?.serviceable
+        ? Number(deliveryQuote.deliveryCharge || 0)
+        : subtotal >= freeDeliveryThreshold
+          ? 0
+          : 49;
   const total = Math.max(0, subtotal - couponDiscount + delivery);
 
   cartCount.textContent = itemCount;
@@ -1115,10 +1167,12 @@ function renderCart() {
   totalEl.textContent = currency(total);
   deliveryNote.textContent =
     subtotal === 0
-      ? "Free delivery on orders above Rs. 999."
-      : delivery === 0
-        ? "Free delivery unlocked for this order."
-        : `Add ${currency(freeDeliveryThreshold - subtotal)} more for free delivery.`;
+      ? "Enter pincode at checkout to confirm serviceability and delivery charge."
+      : deliveryQuote?.serviceable
+        ? deliveryQuote.deliveryCharge === 0
+          ? `${deliveryQuote.message} ETA: ${deliveryQuote.eta}.`
+          : `${deliveryQuote.message} Add ${currency(deliveryQuote.amountForFreeDelivery)} more for free delivery. ETA: ${deliveryQuote.eta}.`
+        : deliveryQuote?.message || "Enter pincode to calculate exact delivery charge.";
   wishlistCount.textContent = wishlist.size;
 
   if (!items.length) {
@@ -1460,6 +1514,11 @@ accountCard.addEventListener("click", (event) => {
   renderAccount();
 });
 
+checkoutForm.elements.pincode.addEventListener("input", scheduleDeliveryCheck);
+checkoutForm.elements.pincode.addEventListener("blur", () => {
+  updateDeliveryQuote({ force: true }).catch(() => {});
+});
+
 checkoutForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!cart.size) {
@@ -1478,6 +1537,13 @@ checkoutForm.addEventListener("submit", async (event) => {
   }
   if (!/^\d{6}$/.test(pincode)) {
     showToast("Please enter a valid 6-digit pincode.");
+    return;
+  }
+  const quote = await updateDeliveryQuote({ force: true });
+  if (!quote?.serviceable) {
+    const message = quote?.message || "Delivery is not available for this pincode yet.";
+    orderNote.textContent = message;
+    showToast(message);
     return;
   }
   const submitButton = checkoutForm.querySelector('button[type="submit"]');
@@ -1532,6 +1598,7 @@ checkoutForm.addEventListener("submit", async (event) => {
   checkoutForm.reset();
   cart.clear();
   appliedCoupon = "";
+  deliveryQuote = null;
   couponInput.value = "";
   persistShop();
   renderCart();

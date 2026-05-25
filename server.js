@@ -6,6 +6,7 @@ const crypto = require("node:crypto");
 const root = __dirname;
 const dbPath = path.join(root, "data", "db.json");
 const seedPath = path.join(root, "data", "seed.json");
+const uploadDir = path.join(root, "assets", "uploads");
 
 function loadLocalEnv() {
   const envPath = path.join(root, ".env");
@@ -30,7 +31,7 @@ const adminPin = process.env.SEEDORA_ADMIN_PIN || "9704597062";
 const sessionTtlMs = 1000 * 60 * 60 * 24 * 14;
 const adminSessionTtlMs = 1000 * 60 * 60 * 12;
 const otpTtlMs = 1000 * 60 * 5;
-const maxJsonBodyBytes = 5_000_000;
+const maxJsonBodyBytes = 12_000_000;
 const postgresEnabled = Boolean(process.env.DATABASE_URL);
 const postgresStateId = "seedora-main";
 let pgPool;
@@ -45,8 +46,48 @@ const mimeTypes = {
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
   ".ico": "image/x-icon",
 };
+
+const deliveryZones = [
+  {
+    id: "ap-ts",
+    name: "Andhra Pradesh & Telangana",
+    states: ["Andhra Pradesh", "Telangana"],
+    prefixes: ["50", "51", "52", "53"],
+    charge: 39,
+    freeAbove: 699,
+    eta: "1-3 business days",
+  },
+  {
+    id: "south",
+    name: "South India",
+    states: ["Karnataka", "Tamil Nadu", "Kerala", "Puducherry"],
+    prefixes: ["56", "57", "58", "59", "60", "61", "62", "63", "64", "67", "68", "69"],
+    charge: 59,
+    freeAbove: 999,
+    eta: "2-4 business days",
+  },
+  {
+    id: "metro-west",
+    name: "Metro & West India",
+    states: ["Maharashtra", "Goa", "Gujarat", "Rajasthan", "Madhya Pradesh", "Chhattisgarh"],
+    prefixes: ["30", "31", "32", "33", "34", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49"],
+    charge: 79,
+    freeAbove: 1499,
+    eta: "3-6 business days",
+  },
+  {
+    id: "north-east",
+    name: "North & East India",
+    states: ["Delhi NCR", "Punjab", "Haryana", "Uttar Pradesh", "Uttarakhand", "Bihar", "Jharkhand", "Odisha", "West Bengal", "Assam", "North East"],
+    prefixes: ["11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "70", "71", "72", "73", "74", "75", "76", "78", "79"],
+    charge: 89,
+    freeAbove: 1499,
+    eta: "4-7 business days",
+  },
+];
 
 function getPgPool() {
   if (!postgresEnabled) return null;
@@ -347,6 +388,64 @@ function publicProduct(product) {
   return rest;
 }
 
+function deliveryQuote(pincode, subtotal = 0) {
+  const normalized = String(pincode || "").trim();
+  const orderSubtotal = Math.max(0, Number(subtotal || 0));
+  if (!/^\d{6}$/.test(normalized)) {
+    return {
+      serviceable: false,
+      pincode: normalized,
+      message: "Enter a valid 6-digit Indian pincode.",
+      deliveryCharge: 0,
+      freeAbove: 0,
+    };
+  }
+  const zone = deliveryZones.find((entry) => entry.prefixes.some((prefix) => normalized.startsWith(prefix)));
+  if (!zone) {
+    return {
+      serviceable: false,
+      pincode: normalized,
+      message: "Seedora delivery is not active for this pincode yet.",
+      deliveryCharge: 0,
+      freeAbove: 0,
+    };
+  }
+  const deliveryCharge = orderSubtotal >= zone.freeAbove ? 0 : zone.charge;
+  return {
+    serviceable: true,
+    pincode: normalized,
+    zone: zone.id,
+    state: zone.states[0],
+    zoneName: zone.name,
+    eta: zone.eta,
+    deliveryCharge,
+    freeAbove: zone.freeAbove,
+    amountForFreeDelivery: Math.max(0, zone.freeAbove - orderSubtotal),
+    message:
+      deliveryCharge === 0
+        ? `Delivery available to ${zone.name}. Free delivery unlocked.`
+        : `Delivery available to ${zone.name}. Charge: Rs. ${deliveryCharge}.`,
+  };
+}
+
+function safeUploadName(filename, mime) {
+  const extensionFromMime = mime === "image/png" ? ".png" : mime === "image/webp" ? ".webp" : ".jpg";
+  const base = path.basename(String(filename || "seedora-product").toLowerCase(), path.extname(String(filename || "")));
+  const safeBase = slug(base) || "seedora-product";
+  return `${safeBase}-${Date.now().toString(36)}${extensionFromMime}`;
+}
+
+function decodeImageUpload(body) {
+  const dataUrl = String(body.dataUrl || "");
+  const match = dataUrl.match(/^data:(image\/(?:png|jpe?g|webp));base64,([A-Za-z0-9+/=]+)$/);
+  if (!match) throw new Error("Upload a PNG, JPG, JPEG, or WEBP image");
+  const mime = match[1] === "image/jpg" ? "image/jpeg" : match[1];
+  const buffer = Buffer.from(match[2], "base64");
+  if (!buffer.length) throw new Error("Image file is empty");
+  if (buffer.length > 8_000_000) throw new Error("Image must be under 8 MB");
+  return { mime, buffer };
+}
+
 function upsertCategory(db, name) {
   if (db.categories.some((category) => category.name === name)) return;
   db.categories.push({
@@ -415,9 +514,11 @@ function calculateOrder(db, body) {
   });
   const subtotal = orderItems.reduce((sum, item) => sum + item.lineTotal, 0);
   const couponDiscount = body.couponCode === db.settings.couponCode ? Math.round(subtotal * 0.1) : 0;
-  const delivery = subtotal >= db.settings.freeDeliveryThreshold ? 0 : 49;
+  const quote = deliveryQuote(body.address?.pincode, subtotal - couponDiscount);
+  if (!quote.serviceable) throw new Error(quote.message);
+  const delivery = quote.deliveryCharge;
   const total = subtotal - couponDiscount + delivery;
-  return { orderItems, subtotal, couponDiscount, delivery, total };
+  return { orderItems, subtotal, couponDiscount, delivery, total, deliveryQuote: quote };
 }
 
 function deductInventoryForOrder(db, order) {
@@ -525,6 +626,11 @@ async function handleApi(req, res, url) {
     return;
   }
 
+  if (req.method === "GET" && url.pathname === "/api/delivery/check") {
+    json(res, 200, deliveryQuote(url.searchParams.get("pincode"), Number(url.searchParams.get("subtotal") || 0)));
+    return;
+  }
+
   if (req.method === "GET" && url.pathname === "/api/products") {
     const products = db.products.filter((product) => product.active).map(publicProduct);
     json(res, 200, { products, categories: db.categories.filter((category) => category.active) });
@@ -600,6 +706,21 @@ async function handleApi(req, res, url) {
     audit(db, "product.updated", { productId: id });
     await writeDb(db);
     json(res, 200, { product: publicProduct(db.products[index]) });
+    return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/admin/upload-image") {
+    if (!requireAdmin(req, res, db)) return;
+    const body = await readBody(req);
+    const { mime, buffer } = decodeImageUpload(body);
+    fs.mkdirSync(uploadDir, { recursive: true });
+    const filename = safeUploadName(body.filename, mime);
+    const targetPath = path.join(uploadDir, filename);
+    fs.writeFileSync(targetPath, buffer);
+    const imagePath = `/assets/uploads/${filename}`;
+    audit(db, "product.image_uploaded", { imagePath, filename: String(body.filename || "") });
+    await writeDb(db);
+    json(res, 201, { imagePath });
     return;
   }
 
@@ -706,6 +827,8 @@ async function handleApi(req, res, url) {
       area,
       address: addressText,
       pincode,
+      state: totals.deliveryQuote.state,
+      deliveryZone: totals.deliveryQuote.zoneName,
       createdAt: new Date().toISOString(),
     };
     db.addresses.push(address);
@@ -719,6 +842,9 @@ async function handleApi(req, res, url) {
       couponCode: body.couponCode || "",
       couponDiscount: totals.couponDiscount,
       delivery: totals.delivery,
+      deliveryState: totals.deliveryQuote.state,
+      deliveryZone: totals.deliveryQuote.zoneName,
+      deliveryEta: totals.deliveryQuote.eta,
       total: totals.total,
       paymentMethod: String(body.paymentMethod || db.settings.defaultPaymentMethod),
       paymentStatus: body.paymentMethod === "Cash on delivery" ? "cod_pending" : "payment_pending",
@@ -909,7 +1035,7 @@ async function handleApi(req, res, url) {
 function serveStatic(req, res, url) {
   const filePath = url.pathname === "/" ? "/index.html" : decodeURIComponent(url.pathname);
   const resolved = path.resolve(root, `.${filePath}`);
-  if (!resolved.startsWith(root)) {
+  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
     send(res, 403, "Forbidden");
     return;
   }

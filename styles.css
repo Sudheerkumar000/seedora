@@ -2017,7 +2017,7 @@ h1 {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 22px;
   padding-top: 24px;
   border-top: 1px solid var(--line);
@@ -2357,6 +2357,14 @@ h1 {
   color: var(--leaf);
   font-size: 0.9rem;
   font-weight: 850;
+  line-height: 1.4;
+}
+
+.delivery-note:not(:empty) {
+  padding: 10px 12px;
+  border: 1px solid rgba(36, 107, 69, 0.14);
+  border-radius: 8px;
+  background: #f3faf4;
 }
 
 .checkout {
@@ -2690,6 +2698,82 @@ h1 {
   resize: vertical;
 }
 
+.admin-image-preview {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbf5;
+}
+
+.admin-image-preview[hidden] {
+  display: none;
+}
+
+.admin-image-preview img {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.admin-image-preview span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.policy-page {
+  max-width: 880px;
+  margin: 34px auto 0;
+  padding: 34px;
+  border: 1px solid rgba(36, 107, 69, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 44px rgba(23, 33, 29, 0.08);
+}
+
+.policy-page h1 {
+  margin-bottom: 24px;
+  font-size: clamp(2.8rem, 7vw, 5.4rem);
+  line-height: 0.95;
+}
+
+.policy-page section {
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+}
+
+.policy-page h2 {
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.policy-page p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.policy-page a {
+  color: var(--leaf);
+  font-weight: 850;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.contact-grid section {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbf5;
+}
+
 .admin-two {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2930,7 +3014,9 @@ h1 {
   }
 
   .product-grid,
-  .plan-grid {
+  .plan-grid,
+  .footer-grid,
+  .contact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -3137,5 +3223,14 @@ h1 {
 
   .drawer {
     width: 100vw;
+  }
+
+  .footer-grid,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .policy-page {
+    padding: 22px;
   }
 }

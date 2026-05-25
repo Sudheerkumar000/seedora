@@ -33,6 +33,8 @@ const closeOrderDetail = document.querySelector("#closeOrderDetail");
 const inventoryAlerts = document.querySelector("#inventoryAlerts");
 const inventoryMovements = document.querySelector("#inventoryMovements");
 const refreshInventory = document.querySelector("#refreshInventory");
+const productImageUpload = document.querySelector("#productImageUpload");
+const productImagePreview = document.querySelector("#productImagePreview");
 
 let productCache = [];
 let orderCache = [];
@@ -171,6 +173,50 @@ async function saveProduct(item) {
     const error = await response.json().catch(() => ({ error: "Save failed" }));
     throw new Error(error.error || "Save failed");
   }
+}
+
+function readImageUpload() {
+  const file = productImageUpload.files[0];
+  if (!file) return Promise.resolve(null);
+  if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) {
+    return Promise.reject(new Error("Upload a PNG, JPG, JPEG, or WEBP image."));
+  }
+  if (file.size > 8_000_000) {
+    return Promise.reject(new Error("Image must be under 8 MB."));
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve({ filename: file.name, dataUrl: reader.result }));
+    reader.addEventListener("error", () => reject(new Error("Could not read product image.")));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadProductImage() {
+  const upload = await readImageUpload();
+  if (!upload) return "";
+  note.textContent = "Uploading product photo...";
+  const response = await fetch("/api/admin/upload-image", {
+    method: "POST",
+    headers: adminHeaders({ "content-type": "application/json" }),
+    body: JSON.stringify(upload),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "Image upload failed");
+  return data.imagePath;
+}
+
+function renderImagePreview(src, label = "Product photo preview") {
+  if (!src) {
+    productImagePreview.hidden = true;
+    productImagePreview.innerHTML = "";
+    return;
+  }
+  productImagePreview.hidden = false;
+  productImagePreview.innerHTML = `
+    <img src="${src}" alt="${label}" />
+    <span>${label}</span>
+  `;
 }
 
 async function deleteProduct(id) {
@@ -524,6 +570,8 @@ function fillForm(item) {
       form.elements[key].value = Array.isArray(value) ? value.join(", ") : value;
     }
   });
+  productImageUpload.value = "";
+  renderImagePreview(item.image, item.name);
 }
 
 loginForm.addEventListener("submit", async (event) => {
@@ -567,6 +615,17 @@ form.addEventListener("submit", async (event) => {
   }
   const data = new FormData(form);
   const name = data.get("name").toString().trim();
+  let image = data.get("image").toString().trim();
+  try {
+    const uploadedImagePath = await uploadProductImage();
+    if (uploadedImagePath) {
+      image = uploadedImagePath;
+      form.elements.image.value = uploadedImagePath;
+    }
+  } catch (error) {
+    note.textContent = error.message;
+    return;
+  }
   const item = {
     id: data.get("id").toString() || `custom-${slug(name)}-${Date.now().toString().slice(-4)}`,
     name,
@@ -576,7 +635,7 @@ form.addEventListener("submit", async (event) => {
     pack: data.get("pack").toString().trim(),
     tag: data.get("tag").toString().trim(),
     description: data.get("description").toString().trim(),
-    image: data.get("image").toString().trim(),
+    image,
     rating: 4.5,
     stock: Number(data.get("stock")),
     benefits: data
@@ -590,6 +649,8 @@ form.addEventListener("submit", async (event) => {
   try {
     await saveProduct(item);
     form.reset();
+    productImageUpload.value = "";
+    renderImagePreview("");
     note.textContent = "Product saved to backend.";
     await loadProducts();
     render();
@@ -677,7 +738,19 @@ orderList.addEventListener("click", (event) => {
 resetForm.addEventListener("click", () => {
   form.reset();
   form.elements.id.value = "";
+  productImageUpload.value = "";
+  renderImagePreview("");
   note.textContent = "";
+});
+
+productImageUpload.addEventListener("change", () => {
+  const file = productImageUpload.files[0];
+  if (!file) {
+    renderImagePreview(form.elements.image.value.trim());
+    return;
+  }
+  const previewUrl = URL.createObjectURL(file);
+  renderImagePreview(previewUrl, file.name);
 });
 
 exportProducts.addEventListener("click", () => {
