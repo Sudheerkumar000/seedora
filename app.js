@@ -718,6 +718,24 @@ function persistShop() {
   localStorage.setItem("seedoraWishlist", JSON.stringify([...wishlist]));
 }
 
+function consumePendingCartIntent() {
+  try {
+    const intent = JSON.parse(sessionStorage.getItem("seedoraCartIntent") || "null");
+    if (!intent?.key || !intent?.item || Date.now() - Number(intent.createdAt || 0) > 1000 * 60 * 10) {
+      sessionStorage.removeItem("seedoraCartIntent");
+      return;
+    }
+    const existing = cart.get(intent.key);
+    if (!existing || Number(existing.qty || 0) < Number(intent.item.qty || 1)) {
+      cart.set(intent.key, intent.item);
+      persistShop();
+    }
+    sessionStorage.removeItem("seedoraCartIntent");
+  } catch {
+    sessionStorage.removeItem("seedoraCartIntent");
+  }
+}
+
 function showToast(message) {
   orderNote.textContent = message;
   window.clearTimeout(showToast.timer);
@@ -1630,6 +1648,7 @@ function initHeroRoll() {
 async function initSeedora() {
   initHeroRoll();
   await loadBackendCatalog();
+  consumePendingCartIntent();
   renderAccount();
   renderCategories();
   renderProducts();

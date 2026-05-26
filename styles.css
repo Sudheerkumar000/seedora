@@ -2061,6 +2061,39 @@ h1 {
   background: rgba(16, 24, 20, 0.36);
 }
 
+.whatsapp-fab {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 35;
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  color: white;
+  background: #16834f;
+  box-shadow: 0 16px 34px rgba(18, 63, 43, 0.26);
+  font-weight: 900;
+}
+
+.whatsapp-fab:hover {
+  background: #126d42;
+  transform: translateY(-1px);
+}
+
+.whatsapp-fab svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
 .drawer {
   position: fixed;
   top: 0;
@@ -3223,6 +3256,13 @@ h1 {
 
   .drawer {
     width: 100vw;
+  }
+
+  .whatsapp-fab {
+    right: 12px;
+    bottom: 12px;
+    min-height: 48px;
+    padding: 0 14px;
   }
 
   .footer-grid,

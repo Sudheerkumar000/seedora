@@ -58,6 +58,17 @@ function updateCartCount() {
   cartCount.textContent = count;
 }
 
+function cartItemForSelectedProduct(existing) {
+  return {
+    ...product,
+    key: `${product.id}-${selectedVariant}`,
+    pack: selectedVariant,
+    price: variantPrice(product, selectedVariant),
+    mrp: variantMrp(product, selectedVariant),
+    qty: existing ? existing.qty + 1 : 1,
+  };
+}
+
 function productImageMarkup(item) {
   return `
     <div class="product-art page uploaded-photo" role="img" aria-label="${item.name} product image">
@@ -136,16 +147,12 @@ function addSelectedProductToCart() {
   const cart = cartEntries();
   const key = `${product.id}-${selectedVariant}`;
   const existing = cart.get(key);
-  cart.set(key, {
-    ...product,
-    key,
-    pack: selectedVariant,
-    price: variantPrice(product, selectedVariant),
-    mrp: variantMrp(product, selectedVariant),
-    qty: existing ? existing.qty + 1 : 1,
-  });
+  const item = cartItemForSelectedProduct(existing);
+  cart.set(key, item);
   localStorage.setItem("seedoraCart", JSON.stringify([...cart.entries()]));
+  sessionStorage.setItem("seedoraCartIntent", JSON.stringify({ key, item, createdAt: Date.now() }));
   updateCartCount();
+  return cartEntries().has(key);
 }
 
 productPageDetails.addEventListener("click", (event) => {
@@ -160,14 +167,22 @@ productPageDetails.addEventListener("click", (event) => {
   }
 
   if (addButton) {
-    addSelectedProductToCart();
-    productPageNote.textContent = `${product.name} added to your bag.`;
+    const added = addSelectedProductToCart();
+    productPageNote.textContent = added ? `${product.name} added to your bag.` : "Could not add item. Please try again.";
   }
 
   if (buyButton) {
-    addSelectedProductToCart();
-    productPageNote.textContent = "Opening checkout...";
-    window.location.href = "/#cart";
+    buyButton.disabled = true;
+    const added = addSelectedProductToCart();
+    if (!added) {
+      buyButton.disabled = false;
+      productPageNote.textContent = "Could not add item. Please try again.";
+      return;
+    }
+    productPageNote.textContent = "Added to bag. Opening checkout...";
+    window.setTimeout(() => {
+      window.location.assign("/#cart");
+    }, 120);
   }
 
   if (wishButton) {
