@@ -2422,6 +2422,27 @@ h1 {
   background: white;
 }
 
+.pincode-check-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  gap: 8px;
+}
+
+.pincode-check-row button {
+  min-height: 46px;
+  border: 1px solid rgba(36, 107, 69, 0.22);
+  border-radius: 8px;
+  color: white;
+  background: var(--leaf);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.pincode-check-row button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .checkout textarea {
   min-height: 74px;
   padding: 11px 12px;

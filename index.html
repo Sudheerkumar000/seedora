@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seedora | Premium Dry Fruits</title>
     <link rel="icon" href="seedora-logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=seedora-action-v1" />
+    <link rel="stylesheet" href="styles.css?v=pincode-check-v1" />
   </head>
   <body>
     <div class="app-shell">
@@ -393,7 +393,10 @@
         </label>
         <label>
           Pincode
-          <input type="text" name="pincode" placeholder="6-digit pincode" inputmode="numeric" required />
+          <span class="pincode-check-row">
+            <input type="text" name="pincode" placeholder="6-digit pincode" inputmode="numeric" required />
+            <button id="checkPincode" type="button">Check</button>
+          </span>
         </label>
         <div class="payment-options" aria-label="Payment method">
           <label><input type="radio" name="payment" value="UPI" checked /> UPI: PhonePe, Google Pay, Paytm, BHIM</label>
@@ -408,6 +411,6 @@
       <p class="order-note" id="orderNote" role="status"></p>
     </aside>
 
-    <script src="app.js?v=seedora-action-v1"></script>
+    <script src="app.js?v=pincode-check-v1"></script>
   </body>
 </html>

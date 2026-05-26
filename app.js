@@ -590,6 +590,7 @@ const couponInput = document.querySelector("#couponInput");
 const applyCoupon = document.querySelector("#applyCoupon");
 const deliveryNote = document.querySelector("#deliveryNote");
 const checkoutForm = document.querySelector("#checkoutForm");
+const checkPincode = document.querySelector("#checkPincode");
 const orderReceipt = document.querySelector("#orderReceipt");
 const orderNote = document.querySelector("#orderNote");
 const otpRequestForm = document.querySelector("#otpRequestForm");
@@ -761,6 +762,7 @@ async function updateDeliveryQuote({ force = false } = {}) {
   if (!/^\d{6}$/.test(pincode)) {
     deliveryQuote = null;
     renderCart();
+    if (force) deliveryNote.textContent = "Please enter a valid 6-digit pincode.";
     return null;
   }
   const quoteKey = `${pincode}-${deliveryBase}`;
@@ -778,6 +780,20 @@ async function updateDeliveryQuote({ force = false } = {}) {
   }
   renderCart();
   return deliveryQuote;
+}
+
+async function checkDeliveryNow() {
+  if (!cart.size) {
+    deliveryNote.textContent = "Add at least one item before checking delivery.";
+    return;
+  }
+  checkPincode.disabled = true;
+  checkPincode.textContent = "Checking";
+  deliveryNote.textContent = "Checking delivery for this pincode...";
+  const quote = await updateDeliveryQuote({ force: true });
+  if (quote?.message) deliveryNote.textContent = quote.serviceable ? `${quote.message} ETA: ${quote.eta}.` : quote.message;
+  checkPincode.disabled = false;
+  checkPincode.textContent = "Check";
 }
 
 function scheduleDeliveryCheck() {
@@ -1535,6 +1551,13 @@ accountCard.addEventListener("click", (event) => {
 checkoutForm.elements.pincode.addEventListener("input", scheduleDeliveryCheck);
 checkoutForm.elements.pincode.addEventListener("blur", () => {
   updateDeliveryQuote({ force: true }).catch(() => {});
+});
+checkPincode.addEventListener("click", () => {
+  checkDeliveryNow().catch(() => {
+    deliveryNote.textContent = "Delivery check failed. Please try again.";
+    checkPincode.disabled = false;
+    checkPincode.textContent = "Check";
+  });
 });
 
 checkoutForm.addEventListener("submit", async (event) => {
